@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.gms.google-services'
+//    id 'com.google.gms.google-services'
 
     id 'androidx.navigation.safeargs'
     id 'kotlin-kapt'
@@ -9,6 +9,8 @@ plugins {
 
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+
+    id("com.apollographql.apollo3").version("3.6.0")
 }
 
 android {
@@ -132,22 +134,19 @@ dependencies {
     implementation "androidx.work:work-multiprocess:$work_version"
 
     // Google
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'
+//    implementation 'com.google.android.gms:play-services-auth:20.3.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:28.3.0')  //30.2.0 //28.3.0
-    implementation 'com.google.firebase:firebase-database-ktx'
-    implementation 'com.google.firebase:firebase-storage-ktx'
-    implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-firestore-ktx'
-
-//    implementation 'com.google.firebase:firebase-auth-ktx:21.0.5'  // Useless
-
+//    implementation platform('com.google.firebase:firebase-bom:28.3.0')  //30.2.0 //28.3.0
+//    implementation 'com.google.firebase:firebase-database-ktx'
+//    implementation 'com.google.firebase:firebase-storage-ktx'
+//    implementation 'com.google.firebase:firebase-auth-ktx'
+//    implementation 'com.google.firebase:firebase-analytics-ktx'
+//    implementation 'com.google.firebase:firebase-firestore-ktx'
 
     // Firebase UI
-    implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
-    implementation 'com.firebaseui:firebase-ui-database:8.0.0'
+//    implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
+//    implementation 'com.firebaseui:firebase-ui-database:8.0.0'
 
     // Paging
     def paging_version = "3.1.1"
@@ -163,6 +162,9 @@ dependencies {
     implementation "androidx.paging:paging-guava:$paging_version"
     // optional - Jetpack Compose integration
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
+
+    // Apollo
+    implementation("com.apollographql.apollo3:apollo-runtime:3.6.0")
 
 
     // Dependencies for local unit tests
@@ -184,3 +186,10 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
     testImplementation "org.mockito:mockito-core:2.19.0"
 }
+
+apollo {
+    packageName.set("com.example.spacexapp")
+}
+
+// Import schema script:
+// ./gradlew :app:downloadApolloSchema --endpoint='https://api.spacex.land/graphql/' --schema=app/src/main/graphql/com/example/spacexapp/schema.graphqls
