@@ -6,18 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.spacexapp.R
-import com.example.spacexapp.databinding.FragmentFirstBinding
+import com.example.spacexapp.databinding.FragmentDetailBinding
 
 /**
- * A simple [Fragment] subclass as the default destination in the navigation.
+ * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class DetailFragment : Fragment() {
 
-    private var _binding: FragmentFirstBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -25,16 +21,16 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
-        return binding.root
-
+        return FragmentDetailBinding.inflate(inflater, container, false).also {
+            _binding = it
+        }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        binding.buttonSecond.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 
