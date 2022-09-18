@@ -1,0 +1,31 @@
+query Launches($limit: Int, $offset: Int, $order: String) {
+    launches(limit: $limit, offset: $offset, order: $order) {
+        id
+        launch_date_unix
+        launch_site {
+            site_id
+            site_name_long
+        }
+        launch_success
+        mission_id
+        mission_name
+        rocket {
+            rocket {
+                id
+                company
+                name
+            }
+        }
+        ships {
+            id
+            type
+            model
+            name
+        }
+        upcoming
+        telemetry {
+            flight_club
+        }
+        details
+    }
+}

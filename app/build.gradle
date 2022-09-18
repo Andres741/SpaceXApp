@@ -166,6 +166,8 @@ dependencies {
     // Apollo
     implementation("com.apollographql.apollo3:apollo-runtime:3.6.0")
 
+    // OkHttpClient
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
     // Dependencies for local unit tests
     testImplementation "junit:junit:4.13.2"

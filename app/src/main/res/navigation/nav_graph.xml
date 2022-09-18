@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/MainFragment"
-        android:name="com.example.spacexapp.ui.MainFragment"
+        android:name="com.example.spacexapp.ui.main.MainFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_main">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/DetailFragment"
-        android:name="com.example.spacexapp.ui.DetailFragment"
+        android:name="com.example.spacexapp.ui.datail.DetailFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_detail">
     </fragment>
