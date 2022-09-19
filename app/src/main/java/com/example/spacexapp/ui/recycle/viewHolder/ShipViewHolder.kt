@@ -9,7 +9,6 @@ import coil.load
 import com.example.spacexapp.databinding.ShipItemBinding
 import com.example.spacexapp.util.setTextOrGone
 
-
 class ShipViewHolder private constructor(
     private val binding: ShipItemBinding,
 ): RecyclerView.ViewHolder(binding.root) {

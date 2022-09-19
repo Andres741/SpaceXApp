@@ -85,7 +85,7 @@
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="2014-01-06T18:06:00.000Z"
+            tools:text="Sun, 09/11/2018"
             />
 
         <TextView
@@ -111,7 +111,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
 
-            android:layout_marginTop="8dp"
             android:layout_marginHorizontal="6dp"
 
             app:layoutManager="LinearLayoutManager"

@@ -11,5 +11,5 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     launchRepository: LaunchRepository
 ) : ViewModel() {
-    val launchesDataFlow = launchRepository.getLaunchesDataFlow()//.cachedIn(viewModelScope)
+    val launchesDataFlow = launchRepository.getLaunchesDataFlow().cachedIn(viewModelScope)
 }
