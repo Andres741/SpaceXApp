@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/DetailFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_imageFragment"
+            app:destination="@id/imageFragment" />
     </fragment>
     <fragment
         android:id="@+id/DetailFragment"
@@ -22,6 +25,15 @@
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="launch_id"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.example.spacexapp.ui.image.ImageFragment"
+        android:label="ImageFragment"
+        tools:layout="@layout/fragment_image">
+        <argument
+            android:name="imageURL"
             app:argType="string" />
     </fragment>
 </navigation>

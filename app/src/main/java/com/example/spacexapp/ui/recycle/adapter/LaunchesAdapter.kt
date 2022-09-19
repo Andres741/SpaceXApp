@@ -4,10 +4,12 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.ui.recycle.viewHolder.LaunchViewHolder
+import com.example.spacexapp.ui.recycle.viewHolder.OnClickImageViewHolder
 import com.example.spacexapp.ui.recycle.viewHolder.OnClickLaunch
 import com.example.spacexapp.util.createDiffUtil
 
 class LaunchesAdapter(
+    private val onClickImage: OnClickImageViewHolder,
     private val onClickLaunch: OnClickLaunch,
 ) : PagingDataAdapter<LaunchesQuery.Launch, LaunchViewHolder>(
     createDiffUtil(
@@ -20,7 +22,7 @@ class LaunchesAdapter(
 //    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        LaunchViewHolder.create(parent, onClickLaunch)
+        LaunchViewHolder.create(parent, onClickImage, onClickLaunch)
 
     override fun onBindViewHolder(holder: LaunchViewHolder, position: Int) {
         getItem(position)?.also(holder::bind)

@@ -28,7 +28,7 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    private val launchesAdapter by lazy { LaunchesAdapter(::navigateLaunchDetail) }
+    private val launchesAdapter by lazy { LaunchesAdapter(::navigateToImage, ::navigateLaunchDetail) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,5 +77,12 @@ class MainFragment : Fragment() {
 //        val nothing: Nothing? = strn
 //        val str: String = strn
         }
+    }
+
+    private fun navigateToImage(imageURL: String) {
+        Log.d("MainFragment", "clicked image $imageURL")
+        findNavController().navigate(
+            MainFragmentDirections.actionMainFragmentToImageFragment(imageURL)
+        )
     }
 }

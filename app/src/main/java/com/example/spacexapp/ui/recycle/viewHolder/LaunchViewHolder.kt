@@ -17,9 +17,9 @@ class LaunchViewHolder private constructor(
     private var launch: LaunchesQuery.Launch? = null
 
     companion object {
-        fun create(parent: ViewGroup, onClickLaunch: OnClickLaunch): LaunchViewHolder {
+        fun create(parent: ViewGroup, onClickImage: OnClickImageViewHolder, onClickLaunch: OnClickLaunch): LaunchViewHolder {
 
-            val adapter = ImagesAdapter()
+            val adapter = ImagesAdapter(onClickImage)
 
             return LaunchViewHolder(
                 LaunchItemBinding.inflate(

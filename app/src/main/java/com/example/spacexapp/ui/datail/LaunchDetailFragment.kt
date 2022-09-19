@@ -36,13 +36,13 @@ class LaunchDetailFragment : Fragment() {
         viewModel.observe()
     }
 
-    private fun LaunchDetailViewModel.observe() {
-        missionNameFlow.collectOnUI(lifecycle, binding.missionName::setText)
-        missionDetailsFlow.collectOnUI(lifecycle, binding.description::setTextOrGone)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun LaunchDetailViewModel.observe() {
+        missionNameFlow.collectOnUI(lifecycle, binding.missionName::setText)
+        missionDetailsFlow.collectOnUI(lifecycle, binding.description::setTextOrGone)
     }
 }

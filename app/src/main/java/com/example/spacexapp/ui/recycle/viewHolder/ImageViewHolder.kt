@@ -10,16 +10,26 @@ class ImageViewHolder private constructor(
     private val binding: ImageItemBinding,
 ): RecyclerView.ViewHolder(binding.root) {
     companion object {
-        fun create(parent: ViewGroup) = ImageViewHolder(
+        fun create(parent: ViewGroup, onClickImageViewHolder: OnClickImageViewHolder) = ImageViewHolder(
             ImageItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,
             ),
-        )
+        ).apply {
+            binding.root.setOnClickListener {
+                imageUrl?.also(onClickImageViewHolder)
+            }
+        }
     }
+
+    var imageUrl: String? = null
+
     fun bind(imageUrl: String) {
-        binding.image.load(imageUrl) //can't load all images -> solved?
+        this.imageUrl = imageUrl
+        binding.image.load(imageUrl) //can't load all images -> solved removing Glide
 //        Glide.with(binding.image).load(imageUrl).transform().into(binding.image) // Has a bug in shaping
     }
 }
+
+typealias OnClickImageViewHolder = (String) -> Unit
