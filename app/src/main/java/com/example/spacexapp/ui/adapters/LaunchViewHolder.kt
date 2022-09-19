@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.LaunchItemBinding
 import com.example.spacexapp.util.*
-import kotlinx.android.synthetic.main.launch_item.view.*
 
 class LaunchViewHolder private constructor(
     private val binding: LaunchItemBinding,
@@ -48,7 +47,7 @@ class LaunchViewHolder private constructor(
             launch.ships.makeNullIfEmpty()?.also { shipList ->
                 ships.visibility = View.VISIBLE
                 shipsRv.visibility = View.VISIBLE
-                shipsAdapter.list = shipList  // (shipsRv.adapter as ShipsAdapter).list = shipList
+                shipsAdapter.list = shipList
             } ?: kotlin.run {
                 binding.ships.visibility = View.GONE
                 binding.shipsRv.visibility = View.GONE

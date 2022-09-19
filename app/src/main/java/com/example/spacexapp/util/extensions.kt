@@ -3,6 +3,8 @@ package com.example.spacexapp.util
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 
 fun TextView.setTextOrGone(newText: String?) {
@@ -14,6 +16,12 @@ fun TextView.setTextOrGone(newText: String?) {
     visibility = View.VISIBLE
     text = newText
 }
+
+inline var<T, VH : RecyclerView.ViewHolder> ListAdapter<T, VH>.list: List<T>
+    get() = currentList
+    set(value) {
+        submitList(value)
+    }
 
 private val formatter = SimpleDateFormat("EEE, dd/MM/yyyy") // EEE, dd/MM/yyyy - HH:mm:ss
 fun Long.formatDate(): String = formatter.format(this)
