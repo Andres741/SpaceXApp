@@ -9,6 +9,8 @@
         <entry key="app/src/main/res/layout/fragment_main.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_second.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/launch_item.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/nested_ship_item.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/ship_nested_item.xml" value="0.35520833333333335" />
       </map>
     </option>
   </component>

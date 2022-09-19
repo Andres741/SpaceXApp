@@ -63,13 +63,13 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
 
-            app:layout_constraintBottom_toBottomOf="parent"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_max="62dp"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/mission_name"
             app:layout_constraintTop_toBottomOf="@+id/rocket_name"
+
+            app:layout_constraintStart_toStartOf="@+id/mission_name"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintHeight_max="96dp"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintVertical_bias="1.0"
             tools:text="@string/long_text"
             />
@@ -85,7 +85,38 @@
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="2014-01-06T18:06:00.000Z" />
+            tools:text="2014-01-06T18:06:00.000Z"
+            />
+
+        <TextView
+            android:id="@+id/ships"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="16sp"
+
+            android:layout_marginTop="16dp"
+
+            android:text="@string/ships"
+            app:layout_constraintStart_toStartOf="@+id/mission_name"
+            app:layout_constraintTop_toBottomOf="@id/details"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ships_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@id/ships"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="6dp"
+
+            app:layoutManager="LinearLayoutManager"
+            android:orientation="horizontal"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

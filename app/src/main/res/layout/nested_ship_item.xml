@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    tools:layout_height="180dp"
+
+    android:clickable="true"
+    android:elevation="16dp"
+    android:focusable="true"
+    app:cardCornerRadius="8dp"
+
+    android:layout_margin="3dp"
+    app:contentPadding="4dp"
+
+    app:cardBackgroundColor="@color/cardview_light_background"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:id="@+id/ship_image"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_width="128dp" />
+
+        <TextView
+            android:id="@+id/ship_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintWidth_min="60dp"
+
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="@+id/ship_image"
+
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ship_image"
+
+            tools:text="American Islander. testing long name" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+

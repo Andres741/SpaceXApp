@@ -169,6 +169,9 @@ dependencies {
     // OkHttpClient
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
+    implementation("io.coil-kt:coil:2.0.0")
+
+
     // Dependencies for local unit tests
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.hamcrest:hamcrest-all:1.3"

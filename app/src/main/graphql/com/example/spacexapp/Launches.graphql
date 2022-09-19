@@ -18,9 +18,8 @@ query Launches($limit: Int, $offset: Int, $order: String) {
         }
         ships {
             id
-            type
-            model
             name
+            image
         }
         upcoming
         telemetry {

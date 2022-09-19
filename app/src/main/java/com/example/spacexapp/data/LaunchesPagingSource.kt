@@ -20,8 +20,6 @@ class LaunchesPagingSource (
 
             val launchesPage = response.dataAssertNoErrors.launches?.filterNotNull() ?: emptyList()
 
-//            launchesPage.logList("New launches")
-
             LoadResult.Page(
                 data = launchesPage,
                 prevKey = if (page == INITIAL_INDEX) null else page - 1,
@@ -60,6 +58,6 @@ private fun<T, IT: Iterable<T>> IT.logList(msj: Any? = null) = apply {
     }
 }
 
-private fun<T> T.bigLog(msj: Any? = null) {
+private fun<T> T.bigLog(msj: Any? = null) = apply {
     "".log(); toString().uppercase().log(msj); "".log()
 }

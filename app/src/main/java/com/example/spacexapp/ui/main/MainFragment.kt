@@ -25,7 +25,7 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModels()
-    private val launchesAdapter by lazy { LaunchesAdapter(::navigateLaunchDetail) }
+    private val launchesAdapter by lazy { LaunchesAdapter(::navigateLaunchDetail, ::navigateShipDetail) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +60,7 @@ class MainFragment : Fragment() {
     }
 
     private fun navigateLaunchDetail(launch: LaunchesQuery.Launch) {
-        Log.d("MainFragment", "clicked $launch")
+        Log.d("MainFragment", "clicked launch $launch")
 
         if (false) { // useless but interesting
             val strn: String? = launch.id
@@ -72,6 +72,10 @@ class MainFragment : Fragment() {
 //        val nothing: Nothing? = strn
 //        val str: String = strn
         }
+    }
+
+    private fun navigateShipDetail(ship: LaunchesQuery.Ship) {
+        Log.d("MainFragment", "clicked ship: $ship")
     }
 
 }
