@@ -1,32 +1,18 @@
 query Launches($limit: Int, $offset: Int, $sort: String, $order: String){
     launches(limit: $limit, offset: $offset, sort: $sort, order: $order){
         mission_name
-        details
         id
+        details
         launch_date_unix
-        launch_site {
-            site_id
-            site_name_long
-        }
         launch_success
         rocket {
             rocket {
                 id
-                company
                 name
             }
         }
-        ships {
-            id
-            name
-            image
-        }
         links {
             flickr_images
-        }
-        upcoming
-        telemetry {
-            flight_club
         }
     }
 }

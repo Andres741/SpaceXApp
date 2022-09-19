@@ -2,9 +2,16 @@ package com.example.spacexapp.util
 
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 fun TextView.setTextOrGone(newText: String?) {
@@ -29,6 +36,14 @@ fun Long.formatDate(): String = formatter.format(this)
 fun<T: Any> List<T?>?.makeNotNull(): List<T> = this?.filterNotNull() ?: emptyList()
 
 fun<T: Any> List<T?>?.makeNullIfEmpty(): List<T>? = this?.filterNotNull()?.takeIf(List<*>::isNotEmpty)
+
+fun <T> Flow<T>.collectOnUI(lifecycle: Lifecycle, action: suspend (value: T) -> Unit) {
+    lifecycle.coroutineScope.launch {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            collectLatest(action)
+        }
+    }
+}
 
 inline fun<T : Any> createDiffUtil(
     crossinline areItemsTheSame: (oldItem: T, newItem: T) -> Boolean,

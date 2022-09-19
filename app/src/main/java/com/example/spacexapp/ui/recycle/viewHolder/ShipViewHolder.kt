@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spacexapp.LaunchesQuery
 import coil.load
+import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.databinding.ShipItemBinding
 import com.example.spacexapp.util.setTextOrGone
 
@@ -13,7 +14,7 @@ class ShipViewHolder private constructor(
     private val binding: ShipItemBinding,
 ): RecyclerView.ViewHolder(binding.root) {
 
-    private var ship: LaunchesQuery.Ship? = null
+    private var ship: LaunchQuery.Ship? = null
 
     companion object {
         fun create(parent: ViewGroup, onClickLaunch: OnClickShipItem) = ShipViewHolder(
@@ -29,7 +30,7 @@ class ShipViewHolder private constructor(
         }
     }
 
-    fun bind(ship: LaunchesQuery.Ship) {
+    fun bind(ship: LaunchQuery.Ship) {
         this.ship = ship
         binding.apply {
             shipImage.load(ship.image)
@@ -39,7 +40,7 @@ class ShipViewHolder private constructor(
     }
 }
 
-typealias OnClickShipItem = (LaunchesQuery.Ship) -> Unit
+typealias OnClickShipItem = (LaunchQuery.Ship) -> Unit
 
 
 private fun<T> T.log(msj: Any? = null) = apply {

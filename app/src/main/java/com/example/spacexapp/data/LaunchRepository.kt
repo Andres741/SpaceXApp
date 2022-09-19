@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
+import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.LaunchesQuery
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -12,6 +13,9 @@ import javax.inject.Inject
 class LaunchRepository @Inject constructor(
     private val apolloClient: ApolloClient
 ) {
+
+    suspend fun getLaunch(launchId: String) = apolloClient.query(LaunchQuery(launchId)).execute()
+
     suspend fun getAll() = apolloClient.query(LaunchesQuery()).execute()
 
     suspend fun getPage(perPage: Int, page: Int) = apolloClient.query(LaunchesQuery(

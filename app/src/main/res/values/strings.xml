@@ -12,4 +12,5 @@
     <string name="long_text">Second GTO launch for Falcon 9. The USAF evaluated launch data from this flight as part of a separate certification program for SpaceX to qualify to fly U.S. military payloads and found that the Thaicom 6 launch had \'unacceptable fuel reserves at engine cutoff of the stage 2 second burnoff\'</string>
     <string name="ships">Ships</string>
     <string name="images">Images</string>
+    <string name="crew_1_description">SpaceX will launch the first operational mission of its Crew Dragon vehicle as part of NASA\'s Commercial Crew Transportation Capability Program (CCtCap), carrying 3 NASA astronauts and 1 JAXA astronaut to the International Space Station. This mission will be the second crewed flight to launch from the United States since the end of the Space Shuttle program in 2011</string>
 </resources>

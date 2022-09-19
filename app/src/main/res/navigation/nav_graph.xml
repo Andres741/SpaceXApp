@@ -17,8 +17,11 @@
     </fragment>
     <fragment
         android:id="@+id/DetailFragment"
-        android:name="com.example.spacexapp.ui.datail.DetailFragment"
+        android:name="com.example.spacexapp.ui.datail.LaunchDetailFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="launch_id"
+            app:argType="string" />
     </fragment>
 </navigation>

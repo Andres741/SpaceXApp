@@ -10,9 +10,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
 import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
+import com.example.spacexapp.util.collectOnUI
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -24,6 +27,7 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModels()
+
     private val launchesAdapter by lazy { LaunchesAdapter(::navigateLaunchDetail) }
 
     override fun onCreateView(
@@ -46,10 +50,8 @@ class MainFragment : Fragment() {
     }
 
     private fun MainViewModel.observeViewModel() {
-        lifecycleScope.launch {
-            launchesDataFlow.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collectLatest(launchesAdapter::submitData)
-        }
+        launchesDataFlow.collectOnUI(lifecycle, launchesAdapter::submitData)
+
 //        launchesDataFlow.asLiveData().observe(viewLifecycleOwner) {
 //            it ?: return@observe
 //            lifecycleScope.launch {
@@ -60,6 +62,10 @@ class MainFragment : Fragment() {
 
     private fun navigateLaunchDetail(launch: LaunchesQuery.Launch) {
         Log.d("MainFragment", "clicked launch $launch")
+
+        findNavController().navigate(
+            MainFragmentDirections.actionFirstFragmentToSecondFragment(launch.id ?: "")
+        )
 
         if (false) { // useless but interesting
             val strn: String? = launch.id
@@ -72,9 +78,4 @@ class MainFragment : Fragment() {
 //        val str: String = strn
         }
     }
-
-    private fun navigateShipDetail(ship: LaunchesQuery.Ship) {
-        Log.d("MainFragment", "clicked ship: $ship")
-    }
-
 }
