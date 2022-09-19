@@ -10,23 +10,12 @@ import com.example.spacexapp.databinding.FragmentImageBinding
 
 class ImageFragment: Fragment() {
 
-    private var _binding: FragmentImageBinding? = null
-    private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = FragmentImageBinding.inflate(inflater, container, false).also {
-        _binding = it
-    }.root
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val args = ImageFragmentArgs.fromBundle(arguments!!)
+    ) = FragmentImageBinding.inflate(inflater, container, false).apply {
 
-        binding.image.load(args.imageURL)
-    }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+        val args = ImageFragmentArgs.fromBundle(arguments!!)
+        image.load(args.imageURL)
+    }.root
 }
