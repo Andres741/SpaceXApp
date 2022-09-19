@@ -17,6 +17,8 @@ class LaunchRepository @Inject constructor(
     suspend fun getPage(perPage: Int, page: Int) = apolloClient.query(LaunchesQuery(
         limit = Optional.present(perPage),
         offset = Optional.present(perPage * page),
+        sort = Optional.present("launch_date_utc"),
+        order = Optional.present("desc")
     )).execute()
 
     fun getLaunchesDataFlow(): Flow<PagingData<LaunchesQuery.Launch>> = Pager(

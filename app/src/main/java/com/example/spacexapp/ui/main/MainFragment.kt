@@ -8,12 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
-import com.example.spacexapp.ui.adapters.LaunchesAdapter
+import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,7 +24,7 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModels()
-    private val launchesAdapter by lazy { LaunchesAdapter(::navigateLaunchDetail, ::navigateShipDetail) }
+    private val launchesAdapter by lazy { LaunchesAdapter(::navigateLaunchDetail) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

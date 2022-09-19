@@ -1,4 +1,4 @@
-package com.example.spacexapp.ui.adapters
+package com.example.spacexapp.ui.recycle.viewHolder
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,19 +6,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.LaunchItemBinding
+import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
 import com.example.spacexapp.util.*
 
 class LaunchViewHolder private constructor(
     private val binding: LaunchItemBinding,
-    private val shipsAdapter: ShipsAdapter,
+    private val imagesAdapter: ImagesAdapter,
 ): RecyclerView.ViewHolder(binding.root) {
 
     private var launch: LaunchesQuery.Launch? = null
 
     companion object {
-        fun create(parent: ViewGroup, onClickLaunch: OnClickLaunch, onClickNestedShip: OnClickNestedShip): LaunchViewHolder {
+        fun create(parent: ViewGroup, onClickLaunch: OnClickLaunch): LaunchViewHolder {
 
-            val adapter = ShipsAdapter(onClickNestedShip = onClickNestedShip)
+            val adapter = ImagesAdapter()
 
             return LaunchViewHolder(
                 LaunchItemBinding.inflate(
@@ -44,21 +45,20 @@ class LaunchViewHolder private constructor(
             launchDateUtc.setTextOrGone(launch.timeFormatted)
             details.setTextOrGone(launch.details)
 
-            launch.ships.makeNullIfEmpty()?.also { shipList ->
-                ships.visibility = View.VISIBLE
+            launch.links?.flickr_images.makeNullIfEmpty()?.also { imageURL ->
+                images.visibility = View.VISIBLE
                 shipsRv.visibility = View.VISIBLE
-                shipsAdapter.list = shipList
+                imagesAdapter.list = imageURL
             } ?: kotlin.run {
-                binding.ships.visibility = View.GONE
-                binding.shipsRv.visibility = View.GONE
-                shipsAdapter.list = emptyList()
+                images.visibility = View.GONE
+                shipsRv.visibility = View.GONE
+                imagesAdapter.list = emptyList()
             }
-            launch.ships.makeNotNull()
         }
     }
 
     fun recycle() {
-        shipsAdapter.list = emptyList()
+        imagesAdapter.list = emptyList()
     }
 }
 

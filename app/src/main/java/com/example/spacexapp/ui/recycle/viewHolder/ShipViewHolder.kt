@@ -1,24 +1,24 @@
-package com.example.spacexapp.ui.adapters
+package com.example.spacexapp.ui.recycle.viewHolder
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spacexapp.LaunchesQuery
-import com.example.spacexapp.databinding.NestedShipItemBinding
 import coil.load
+import com.example.spacexapp.databinding.ShipItemBinding
 import com.example.spacexapp.util.setTextOrGone
 
 
-class NestedShipViewHolder private constructor(
-    private val binding: NestedShipItemBinding,
+class ShipViewHolder private constructor(
+    private val binding: ShipItemBinding,
 ): RecyclerView.ViewHolder(binding.root) {
 
     private var ship: LaunchesQuery.Ship? = null
 
     companion object {
-        fun create(parent: ViewGroup, onClickLaunch: OnClickNestedShip) = NestedShipViewHolder(
-            NestedShipItemBinding.inflate(
+        fun create(parent: ViewGroup, onClickLaunch: OnClickShipItem) = ShipViewHolder(
+            ShipItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,
@@ -34,14 +34,13 @@ class NestedShipViewHolder private constructor(
         this.ship = ship
         binding.apply {
             shipImage.load(ship.image)
-//            Glide.with(shipImage).load(ship.image).into(shipImage)
             shipName.setTextOrGone(ship.name?.trim())
 //            shipName.text = "cont: ${++cont}" // There are recycle between multiple adapters!!
         }
     }
 }
 
-typealias OnClickNestedShip = (LaunchesQuery.Ship) -> Unit
+typealias OnClickShipItem = (LaunchesQuery.Ship) -> Unit
 
 
 private fun<T> T.log(msj: Any? = null) = apply {

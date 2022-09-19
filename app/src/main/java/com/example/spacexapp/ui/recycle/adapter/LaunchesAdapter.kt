@@ -1,13 +1,14 @@
-package com.example.spacexapp.ui.adapters
+package com.example.spacexapp.ui.recycle.adapter
 
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import com.example.spacexapp.LaunchesQuery
+import com.example.spacexapp.ui.recycle.viewHolder.LaunchViewHolder
+import com.example.spacexapp.ui.recycle.viewHolder.OnClickLaunch
 import com.example.spacexapp.util.createDiffUtil
 
 class LaunchesAdapter(
     private val onClickLaunch: OnClickLaunch,
-    private val onClickNestedShip: OnClickNestedShip,
 ) : PagingDataAdapter<LaunchesQuery.Launch, LaunchViewHolder>(
     createDiffUtil(
         areItemsTheSame = { old, new -> old.id == new.id },
@@ -19,7 +20,7 @@ class LaunchesAdapter(
 //    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        LaunchViewHolder.create(parent, onClickLaunch, onClickNestedShip)
+        LaunchViewHolder.create(parent, onClickLaunch)
 
     override fun onBindViewHolder(holder: LaunchViewHolder, position: Int) {
         getItem(position)?.also(holder::bind)
