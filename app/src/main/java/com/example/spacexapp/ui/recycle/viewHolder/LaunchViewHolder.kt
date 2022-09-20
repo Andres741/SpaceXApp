@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.Coil
+import coil.request.ImageRequest
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.LaunchItemBinding
 import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
@@ -45,10 +47,10 @@ class LaunchViewHolder private constructor(
             launchDateUtc.setTextOrGone(launch.timeFormatted)
             details.setTextOrGone(launch.details)
 
-            launch.links?.flickr_images.makeNullIfEmpty()?.also { imageURL ->
+            launch.links?.flickr_images.makeNullIfEmpty()?.also { imageURLs ->
                 images.visibility = View.VISIBLE
                 shipsRv.visibility = View.VISIBLE
-                imagesAdapter.list = imageURL
+                imagesAdapter.list = imageURLs
             } ?: kotlin.run {
                 images.visibility = View.GONE
                 shipsRv.visibility = View.GONE

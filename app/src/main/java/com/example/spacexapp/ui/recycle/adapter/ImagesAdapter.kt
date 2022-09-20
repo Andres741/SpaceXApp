@@ -23,4 +23,9 @@ class ImagesAdapter(
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         holder.bind(list[position])
     }
+
+    override fun onViewRecycled(holder: ImageViewHolder) {
+        super.onViewRecycled(holder)
+        holder.recycle()
+    }
 }
