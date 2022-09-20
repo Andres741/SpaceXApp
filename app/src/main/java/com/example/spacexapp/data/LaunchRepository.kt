@@ -14,16 +14,24 @@ class LaunchRepository @Inject constructor(
     private val apolloClient: ApolloClient
 ) {
 
-    suspend fun getLaunch(launchId: String) = apolloClient.query(LaunchQuery(launchId)).execute()
+    suspend fun getLaunch(launchId: String) = kotlin.runCatching {
+        apolloClient.query(LaunchQuery(launchId)).execute().dataAssertNoErrors
+    }
 
-    suspend fun getAll() = apolloClient.query(LaunchesQuery()).execute()
+    suspend fun getAll() = kotlin.runCatching {
+        apolloClient.query(LaunchesQuery()).execute().dataAssertNoErrors
+    }
 
-    suspend fun getPage(perPage: Int, page: Int) = apolloClient.query(LaunchesQuery(
-        limit = Optional.present(perPage),
-        offset = Optional.present(perPage * page),
-        sort = Optional.present("launch_date_utc"),
-        order = Optional.present("desc")
-    )).execute()
+    suspend fun getPage(perPage: Int, page: Int) = kotlin.runCatching {
+        apolloClient.query(
+            LaunchesQuery(
+                limit = Optional.present(perPage),
+                offset = Optional.present(perPage * page),
+                sort = Optional.present("launch_date_utc"),
+                order = Optional.present("desc")
+            )
+        ).execute().dataAssertNoErrors
+    }
 
     fun getLaunchesDataFlow(): Flow<PagingData<LaunchesQuery.Launch>> = Pager(
         config = PagingConfig(enablePlaceholders = false, pageSize = NETWORK_PAGE_SIZE),

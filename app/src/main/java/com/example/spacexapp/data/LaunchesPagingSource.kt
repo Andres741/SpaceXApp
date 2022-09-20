@@ -6,6 +6,7 @@ import androidx.paging.PagingState
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.example.spacexapp.LaunchesQuery
+import com.example.spacexapp.util.makeNotNull
 import javax.inject.Inject
 
 class LaunchesPagingSource (
@@ -15,19 +16,18 @@ class LaunchesPagingSource (
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LaunchesQuery.Launch> {
         val page = params.key ?: INITIAL_INDEX
 
-        return try {
-            val response = launchPageProvider(params.loadSize, page)
+        return launchPageProvider(params.loadSize, page).fold({ response ->
 
-            val launchesPage = response.dataAssertNoErrors.launches?.filterNotNull() ?: emptyList()
+            val launchesPage = response.launches
 
             LoadResult.Page(
-                data = launchesPage,
+                data = launchesPage.makeNotNull(),
                 prevKey = if (page == INITIAL_INDEX) null else page - 1,
-                nextKey = if (launchesPage.isEmpty()) null else page + 1
+                nextKey = if (launchesPage.isNullOrEmpty()) null else page + 1
             )
-        } catch (e: Exception) {
+        }, { e ->
             LoadResult.Error(e)
-        }
+        })
     }
 
     override fun getRefreshKey(
@@ -41,7 +41,7 @@ class LaunchesPagingSource (
     }
 }
 
-typealias LaunchPageProvider = suspend (perPage: Int, page: Int) -> ApolloResponse<LaunchesQuery.Data>
+typealias LaunchPageProvider = suspend (perPage: Int, page: Int) -> Result<LaunchesQuery.Data>
 
 private fun<T> T.log(msj: Any? = null) = apply {
     Log.d("LaunchesPagingSource", "${if (msj != null) "$msj: " else ""}${toString()}")

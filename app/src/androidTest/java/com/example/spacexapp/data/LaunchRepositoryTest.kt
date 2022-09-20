@@ -24,14 +24,14 @@ class LaunchRepositoryTest {
         val listActual: List<LaunchesQuery.Launch?>
 
         measureTimeMillis {
-            listActual = repo.getPage(totalItems, 0).data?.launches ?: emptyList()
+            listActual = repo.getPage(totalItems, 0).getOrNull()?.launches ?: emptyList()
         }.log("Time get $totalItems")
 
         val listExpected = ArrayList<LaunchesQuery.Launch?>(totalItems)
 
         measureTimeMillis {
             repeat(pages) {
-                repo.getPage(perPage, it).data?.launches?.also(listExpected::addAll)
+                repo.getPage(perPage, it).getOrNull()?.launches?.also(listExpected::addAll)
             }
         }.log("Time get $pages*$perPage")
 

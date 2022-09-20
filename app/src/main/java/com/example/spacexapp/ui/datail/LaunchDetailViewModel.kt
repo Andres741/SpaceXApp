@@ -31,7 +31,7 @@ class LaunchDetailViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 try {
-                    val launch = launchRepository.getLaunch(launchId).dataAssertNoErrors.launch!!
+                    val launch = launchRepository.getLaunch(launchId).getOrThrow().launch!!
                     _missionNameFlow.value = launch.mission_name!!
                     _missionDetailsFlow.value = launch.details
                 } catch (e: Exception) {
