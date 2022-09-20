@@ -4,11 +4,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.request.ErrorResult
+import coil.request.ImageResult
+import coil.request.SuccessResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +47,12 @@ fun <T> Flow<T>.collectOnUI(lifecycle: Lifecycle, action: suspend (value: T) -> 
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             collectLatest(action)
         }
+    }
+
+inline fun <T> ImageResult.fold(onSuccess: (SuccessResult) -> T, onFailure: (ErrorResult) -> T) =
+    when (this) {
+        is SuccessResult -> onSuccess(this)
+        is ErrorResult -> onFailure(this)
     }
 
 suspend inline fun<T> delayAtLeast(millis: Long, block: () -> T): T {

@@ -11,12 +11,9 @@ import coil.load
 import coil.request.ErrorResult
 import coil.request.ImageResult
 import coil.request.SuccessResult
-import com.bumptech.glide.Glide
 import com.example.spacexapp.databinding.FragmentImageBinding
-import com.example.spacexapp.util.delayAtLeast
+import com.example.spacexapp.util.fold
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
 
 class ImageFragment: Fragment() {
 
@@ -42,18 +39,15 @@ class ImageFragment: Fragment() {
             val result: ImageResult = loadDisposable.job.await()
             "Load of $imageURL finished".log()
 
-            when (result) {
-                is SuccessResult -> {
-                    "Load was successfully".log()
-                    progressBar.visibility = View.GONE
-                }
-                is ErrorResult -> {
-                    "Load error".log()
-                    delay(300)
-                    progressBar.visibility = View.GONE
-                    error.visibility = View.VISIBLE
-                }
-            }
+            result.fold({
+                "Load was successfully".log()
+                progressBar.visibility = View.GONE
+            },{
+                "Load error".log()
+                delay(300)
+                progressBar.visibility = View.GONE
+                error.visibility = View.VISIBLE
+            })
         }
     }
 
