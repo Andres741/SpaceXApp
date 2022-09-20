@@ -9,10 +9,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import kotlin.system.measureTimeMillis
 
 fun TextView.setTextOrGone(newText: String?) {
     if (newText.isNullOrBlank()) {
@@ -37,12 +40,21 @@ fun<T: Any> List<T?>?.makeNotNull(): List<T> = this?.filterNotNull() ?: emptyLis
 
 fun<T: Any> List<T?>?.makeNullIfEmpty(): List<T>? = this?.filterNotNull()?.takeIf(List<*>::isNotEmpty)
 
-fun <T> Flow<T>.collectOnUI(lifecycle: Lifecycle, action: suspend (value: T) -> Unit) {
+fun <T> Flow<T>.collectOnUI(lifecycle: Lifecycle, action: suspend (value: T) -> Unit): Job =
     lifecycle.coroutineScope.launch {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             collectLatest(action)
         }
     }
+
+suspend inline fun<T> delayAtLeast(millis: Long, block: () -> T): T {
+    val elem: T
+    measureTimeMillis {
+        elem = block()
+    }.also {
+        delay(millis - it)
+    }
+    return elem
 }
 
 inline fun<T : Any> createDiffUtil(

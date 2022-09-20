@@ -9,5 +9,24 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/todo"
+        />
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+        android:layout_gravity="center"
+        />
+    <ImageView
+        android:id="@+id/error"
+        android:layout_width="166dp"
+        android:layout_height="166dp"
+
+        android:layout_gravity="center"
+        android:src="@drawable/no_internet"
+        android:contentDescription="@string/no_internet"
+        android:visibility="gone"
         />
 </FrameLayout>

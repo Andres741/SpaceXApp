@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spacexapp.data.LaunchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -27,12 +29,14 @@ class LaunchDetailViewModel @Inject constructor(
         this.launchId = launchId
 
         viewModelScope.launch {
-            try {
-                val launch = launchRepository.getLaunch(launchId).dataAssertNoErrors.launch!!
-                _missionNameFlow.value = launch.mission_name!!
-                _missionDetailsFlow.value = launch.details
-            } catch (e: Exception) {
+            withContext(Dispatchers.Default) {
+                try {
+                    val launch = launchRepository.getLaunch(launchId).dataAssertNoErrors.launch!!
+                    _missionNameFlow.value = launch.mission_name!!
+                    _missionDetailsFlow.value = launch.details
+                } catch (e: Exception) {
 
+                }
             }
         }
     }

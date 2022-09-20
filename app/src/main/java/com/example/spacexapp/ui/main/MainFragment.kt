@@ -62,21 +62,9 @@ class MainFragment : Fragment() {
 
     private fun navigateLaunchDetail(launch: LaunchesQuery.Launch) {
         Log.d("MainFragment", "clicked launch $launch")
-
         findNavController().navigate(
             MainFragmentDirections.actionFirstFragmentToSecondFragment(launch.id ?: "")
         )
-
-        if (false) { // useless but interesting
-            val strn: String? = launch.id
-            if (strn == null) {
-                val nothing: Nothing? = strn
-            } else {
-                val str: String = strn
-            }
-//        val nothing: Nothing? = strn
-//        val str: String = strn
-        }
     }
 
     private fun navigateToImage(imageURL: String) {
