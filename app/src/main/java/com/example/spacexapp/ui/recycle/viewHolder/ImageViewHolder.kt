@@ -35,10 +35,14 @@ class ImageViewHolder private constructor(
     fun bind(imageUrl: String) {
         this.imageUrl = imageUrl
 
-        binding.image.load(imageUrl.log()) {
-            listener(onSuccess = { _, _ ->
-                binding.progressBar.visibility = View.GONE
-            })
+        binding.apply {
+            progressBar.visibility = View.VISIBLE
+
+            image.load(imageUrl.log()) {
+                listener(onSuccess = { _, _ ->
+                    progressBar.visibility = View.GONE
+                })
+            }
         }
 
 //        Glide.with(binding.image).load(imageUrl).into(binding.image) // Has a bug in shaping
