@@ -7,18 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
 import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
+import com.example.spacexapp.util.Logger
 import com.example.spacexapp.util.collectOnUI
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -41,7 +36,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.observeViewModel()
+        viewModel.observe()
     }
 
     override fun onDestroyView() {
@@ -49,8 +44,10 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    private fun MainViewModel.observeViewModel() {
-        launchesDataFlow.collectOnUI(lifecycle, launchesAdapter::submitData)
+    private fun MainViewModel.observe() {
+        launchesDataFlow.collectOnUI(lifecycle) {
+            launchesAdapter.submitData(it)
+        }
 
 //        launchesDataFlow.asLiveData().observe(viewLifecycleOwner) {
 //            it ?: return@observe
@@ -73,4 +70,7 @@ class MainFragment : Fragment() {
             MainFragmentDirections.actionMainFragmentToImageFragment(imageURL)
         )
     }
+
+    private val logger = Logger("MainFragment")
+    private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
 }
