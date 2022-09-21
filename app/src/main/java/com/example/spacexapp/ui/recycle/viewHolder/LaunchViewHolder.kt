@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.Coil
-import coil.request.ImageRequest
 import com.example.spacexapp.LaunchesQuery
+import com.example.spacexapp.data.timeFormatted
 import com.example.spacexapp.databinding.LaunchItemBinding
 import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
 import com.example.spacexapp.util.*

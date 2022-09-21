@@ -8,13 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.paging.CombinedLoadStates
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
 import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
-import com.example.spacexapp.util.Logger
-import com.example.spacexapp.util.collectOnUI
-import com.example.spacexapp.util.viewLifecycle
+import com.example.spacexapp.util.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,17 +34,15 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.observe()
+        viewModel.observeViewModel()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        "onDestroyView".log()
     }
 
-    private fun MainViewModel.observe() {
-        "MainViewModel.observe".log()
+    private fun MainViewModel.observeViewModel() {
 
         launchesDataFlow.collectOnUI(viewLifecycleOwner, launchesAdapter::submitData)
 
