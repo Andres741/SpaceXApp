@@ -2,9 +2,8 @@ package com.example.spacexapp.util
 
 import android.view.View
 import android.widget.TextView
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +28,10 @@ fun TextView.setTextOrGone(newText: String?) {
     text = newText
 }
 
+inline val Fragment.viewLifecycle get() = viewLifecycleOwner.lifecycle
+inline val Fragment.viewCoroutineScope get() = viewLifecycle.coroutineScope
+
+
 inline var<T, VH : RecyclerView.ViewHolder> ListAdapter<T, VH>.list: List<T>
     get() = currentList
     set(value) {
@@ -48,6 +51,9 @@ fun <T> Flow<T>.collectOnUI(lifecycle: Lifecycle, action: suspend (value: T) -> 
             collectLatest(action)
         }
     }
+
+fun <T> Flow<T>.collectOnUI(owner: LifecycleOwner, action: suspend (value: T) -> Unit): Job =
+    collectOnUI(owner.lifecycle, action)
 
 inline fun <T> ImageResult.fold(onSuccess: (SuccessResult) -> T, onFailure: (ErrorResult) -> T) =
     when (this) {

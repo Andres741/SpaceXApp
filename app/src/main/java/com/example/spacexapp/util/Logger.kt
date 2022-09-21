@@ -20,6 +20,10 @@ class Logger(
         }
     }
 
+    fun <T, C: Collection<T>> logListSize(data: C, msj: Any? = null) = data.apply {
+        log(size, msj)
+    }
+
     fun <T> bigLog(data: T, msj: Any? = null) = data.apply {
         log(""); log(toString().uppercase(), msj); log("")
     }
@@ -29,5 +33,10 @@ class Logger(
 //    fun <T> getBigLog(): logFun<T> = this::bigLog
 }
 
-typealias logFun<T> = T.(Any?) -> T
+//typealias logFun<T> = T.(Any?) -> T
 
+private val logger = Logger("Logger")
+private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
+private fun<T, IT: Iterable<T>> IT.logList(msj: Any? = null): IT = logger.logList(this, msj)
+private fun<T, IT: Collection<T>> IT.logListSize(msj: Any? = null): IT = logger.logListSize(this, msj)
+private fun<T> T.bigLog(msj: Any? = null): T = logger.bigLog(this, msj)

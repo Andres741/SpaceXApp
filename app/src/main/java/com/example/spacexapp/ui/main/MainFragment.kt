@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
 import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
 import com.example.spacexapp.util.Logger
 import com.example.spacexapp.util.collectOnUI
+import com.example.spacexapp.util.viewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,26 +37,20 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.observe()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        "onDestroyView".log()
     }
 
     private fun MainViewModel.observe() {
-        launchesDataFlow.collectOnUI(lifecycle) {
-            launchesAdapter.submitData(it)
-        }
+        "MainViewModel.observe".log()
 
-//        launchesDataFlow.asLiveData().observe(viewLifecycleOwner) {
-//            it ?: return@observe
-//            lifecycleScope.launch {
-//                launchesAdapter.submitData(it)
-//            }
-//        }
+        launchesDataFlow.collectOnUI(viewLifecycleOwner, launchesAdapter::submitData)
+
     }
 
     private fun navigateLaunchDetail(launch: LaunchesQuery.Launch) {
@@ -73,4 +69,7 @@ class MainFragment : Fragment() {
 
     private val logger = Logger("MainFragment")
     private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
+    private fun<T, IT: Iterable<T>> IT.logList(msj: Any? = null): IT = logger.logList(this, msj)
+    private fun<T, IT: Collection<T>> IT.logListSize(msj: Any? = null): IT = logger.logListSize(this, msj)
+    private fun<T> T.bigLog(msj: Any? = null): T = logger.bigLog(this, msj)
 }

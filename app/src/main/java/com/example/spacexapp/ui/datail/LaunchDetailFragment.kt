@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import com.example.spacexapp.databinding.FragmentDetailBinding
 import com.example.spacexapp.util.collectOnUI
 import com.example.spacexapp.util.setTextOrGone
+import com.example.spacexapp.util.viewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,7 +43,7 @@ class LaunchDetailFragment : Fragment() {
     }
 
     private fun LaunchDetailViewModel.observe() {
-        missionNameFlow.collectOnUI(lifecycle, binding.missionName::setText)
-        missionDetailsFlow.collectOnUI(lifecycle, binding.description::setTextOrGone)
+        missionNameFlow.collectOnUI(viewLifecycleOwner, binding.missionName::setText)
+        missionDetailsFlow.collectOnUI(viewLifecycleOwner, binding.description::setTextOrGone)
     }
 }

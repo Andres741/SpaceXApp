@@ -18,7 +18,7 @@ class LaunchesPagingSource (
             val launchesPage = response.launches
 
             LoadResult.Page(
-                data = launchesPage.makeNotNull().logList("page"),
+                data = launchesPage.makeNotNull().logListSize("page size"),
                 prevKey = if (page == INITIAL_INDEX) null else page - 1,
                 nextKey = if (launchesPage.isNullOrEmpty()) null else page + 1
             )
@@ -43,4 +43,5 @@ typealias LaunchPageProvider = suspend (perPage: Int, page: Int) -> Result<Launc
 private val logger = Logger("LaunchesPagingSource")
 private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
 private fun<T, IT: Iterable<T>> IT.logList(msj: Any? = null): IT = logger.logList(this, msj)
+private fun<T, IT: Collection<T>> IT.logListSize(msj: Any? = null): IT = logger.logListSize(this, msj)
 private fun<T> T.bigLog(msj: Any? = null): T = logger.bigLog(this, msj)
