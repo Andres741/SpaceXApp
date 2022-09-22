@@ -45,6 +45,13 @@ fun<T: Any> List<T?>?.makeNotNull(): List<T> = this?.filterNotNull() ?: emptyLis
 
 fun<T: Any> List<T?>?.makeNullIfEmpty(): List<T>? = this?.filterNotNull()?.takeIf(List<*>::isNotEmpty)
 
+inline fun <B: Boolean?> B.ifTrue(block: () -> Unit) = apply {
+    if (this == true) block()
+}
+inline fun <B: Boolean?> B.ifFalse(block: () -> Unit) = apply {
+    if (this == false) block()
+}
+
 fun <T> Flow<T>.collectOnUI(lifecycle: Lifecycle, action: suspend (value: T) -> Unit): Job =
     lifecycle.coroutineScope.launch {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

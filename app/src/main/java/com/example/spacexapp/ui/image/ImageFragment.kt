@@ -1,24 +1,15 @@
 package com.example.spacexapp.ui.image
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import coil.load
-import coil.request.Disposable
-import coil.request.ErrorResult
-import coil.request.ImageResult
-import coil.request.SuccessResult
 import com.example.spacexapp.databinding.FragmentImageBinding
 import com.example.spacexapp.util.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.takeWhile
 
 @AndroidEntryPoint
 class ImageFragment: Fragment() {
@@ -49,17 +40,17 @@ class ImageFragment: Fragment() {
             }
         }
 
-        viewModel.loadStatus.collectOnUI(viewLifecycleOwner) {
+        viewModel.loadImageStatusFlow.collectOnUI(viewLifecycleOwner) {
             when(it) {
-                LoadStatus.Loading -> {
+                LoadImageStatus.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.error.visibility = View.GONE
                 }
-                LoadStatus.Loaded -> {
+                LoadImageStatus.Loaded -> {
                     binding.progressBar.visibility = View.GONE
                     binding.error.visibility = View.GONE
                 }
-                LoadStatus.Error -> {
+                LoadImageStatus.Error -> {
                     binding.progressBar.visibility = View.GONE
                     binding.error.visibility = View.VISIBLE
                 }
@@ -73,15 +64,15 @@ class ImageFragment: Fragment() {
 
     private fun FragmentImageBinding.loadImage(imageURL: String) {
 
-        viewModel.loadStatus.value = LoadStatus.Loading
+        viewModel.loadImageStatusFlow.value = LoadImageStatus.Loading
 
         image.load("$imageURL/") {
             listener(
                 onSuccess = { _, _ ->
-                    viewModel.loadStatus.value = LoadStatus.Loaded
+                    viewModel.loadImageStatusFlow.value = LoadImageStatus.Loaded
                 },
                 onError = { _, _ ->
-                    viewModel.loadStatus.value = LoadStatus.Error
+                    viewModel.loadImageStatusFlow.value = LoadImageStatus.Error
                 }
             )
         }

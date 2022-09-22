@@ -21,13 +21,13 @@ import java.net.Socket
 
 sealed class NetworkStatus {
 
-    abstract val isInternetAvailable: Boolean
+    abstract val isAvailable: Boolean
 
     object Available : NetworkStatus() {
-        override val isInternetAvailable = true
+        override val isAvailable = true
     }
     object Unavailable : NetworkStatus() {
-        override val isInternetAvailable = false
+        override val isAvailable = false
     }
 }
 
@@ -61,5 +61,5 @@ fun getNetworkStatusFlow(context: Context): Flow<NetworkStatus> = callbackFlow {
 }.distinctUntilChanged()
 
 class NetworkStatusFlowFactory(private val context: Context) {
-    val value get() = getNetworkStatusFlow(context)
+    val new get() = getNetworkStatusFlow(context)
 }
