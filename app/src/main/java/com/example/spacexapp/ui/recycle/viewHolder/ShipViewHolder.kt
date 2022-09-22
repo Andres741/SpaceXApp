@@ -4,11 +4,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.spacexapp.LaunchesQuery
 import coil.load
 import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.databinding.ShipItemBinding
-import com.example.spacexapp.util.setTextOrGone
+import com.example.spacexapp.util.extensions.setTextOrGone
 
 class ShipViewHolder private constructor(
     private val binding: ShipItemBinding,

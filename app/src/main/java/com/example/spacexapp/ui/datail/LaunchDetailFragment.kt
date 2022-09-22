@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.spacexapp.databinding.FragmentDetailBinding
-import com.example.spacexapp.util.collectOnUI
-import com.example.spacexapp.util.setTextOrGone
-import com.example.spacexapp.util.viewLifecycle
+import com.example.spacexapp.util.extensions.collectOnUI
+import com.example.spacexapp.util.extensions.setTextOrGone
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

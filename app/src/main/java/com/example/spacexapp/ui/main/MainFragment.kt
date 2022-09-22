@@ -8,11 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.LoadStates
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
 import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
 import com.example.spacexapp.util.*
+import com.example.spacexapp.util.extensions.collectOnUI
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -34,6 +38,19 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        var cont = 0
+        launchesAdapter.loadStateFlow.collectOnUI(viewLifecycleOwner) {
+            (++cont).log("Cont")
+            it.apply {
+                prepend.log("prepend")
+                append.log("append")
+                refresh.log("refresh")
+            }
+
+            viewModel.loadPageState.value = it.source.toLoadPageStatus()
+        }
+
         viewModel.observeViewModel()
     }
 
@@ -46,6 +63,18 @@ class MainFragment : Fragment() {
 
         launchesDataFlow.collectOnUI(viewLifecycleOwner, launchesAdapter::submitData)
 
+        connexionFlow.collectOnUI(viewLifecycleOwner) {
+            it.isAvailable.log("  internet".uppercase())
+        }
+
+        haveToRetry.collectOnUI(viewLifecycleOwner) {
+            if (it.not()) {
+                "not retry".log()
+                return@collectOnUI
+            }
+            "retiring".log()
+            launchesAdapter.retry()
+        }
     }
 
     private fun navigateLaunchDetail(launch: LaunchesQuery.Launch) {
@@ -60,6 +89,21 @@ class MainFragment : Fragment() {
         findNavController().navigate(
             MainFragmentDirections.actionMainFragmentToImageFragment(imageURL)
         )
+    }
+
+    private fun LoadStates.toLoadPageStatus(): LoadPageStatus {
+
+        var loadPageStatus = LoadPageStatus.Loaded as LoadPageStatus
+        forEach { _, loadState ->
+            if (loadState is LoadState.Loading) {
+                loadPageStatus = LoadPageStatus.Loading
+            }
+            if (loadState is LoadState.Error) {
+                loadPageStatus = LoadPageStatus.Error
+                return@forEach
+            }
+        }
+        return loadPageStatus
     }
 
     private val logger = Logger("MainFragment")

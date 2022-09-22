@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import coil.load
 import com.example.spacexapp.databinding.FragmentImageBinding
 import com.example.spacexapp.util.*
+import com.example.spacexapp.util.extensions.collectOnUI
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -7,12 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.spacexapp.databinding.ImageItemBinding
-import com.example.spacexapp.util.collectOnUI
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.launch
+
 
 class ImageViewHolder private constructor(
     private val binding: ImageItemBinding,

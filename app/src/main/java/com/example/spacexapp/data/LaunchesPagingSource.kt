@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.util.Logger
-import com.example.spacexapp.util.makeNotNull
+import com.example.spacexapp.util.extensions.makeNotNull
 
 class LaunchesPagingSource (
     private val launchPageProvider: LaunchPageProvider

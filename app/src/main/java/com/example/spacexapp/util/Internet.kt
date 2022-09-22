@@ -36,20 +36,18 @@ fun getNetworkStatusFlow(context: Context): Flow<NetworkStatus> = callbackFlow {
     val connectivityManager: ConnectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    val connectivityManagerCallback = object : ConnectivityManager.NetworkCallback(){
+    val connectivityManagerCallback = object : ConnectivityManager.NetworkCallback() {
+
         override fun onAvailable(network: Network) {
-            super.onAvailable(network)
             trySendBlocking(NetworkStatus.Available)
         }
 
         override fun onUnavailable() {
-            super.onUnavailable()
             trySendBlocking(NetworkStatus.Unavailable)
         }
     }
 
-    val networkRequest = NetworkRequest
-        .Builder()
+    val networkRequest = NetworkRequest.Builder()
         .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         .build()
     connectivityManager.registerNetworkCallback(networkRequest, connectivityManagerCallback)

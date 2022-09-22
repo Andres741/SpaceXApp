@@ -3,6 +3,7 @@ package com.example.spacexapp.ui.image
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spacexapp.util.*
+import com.example.spacexapp.util.extensions.ifTrue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

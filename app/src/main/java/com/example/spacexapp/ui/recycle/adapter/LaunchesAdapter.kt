@@ -6,7 +6,7 @@ import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.ui.recycle.viewHolder.LaunchViewHolder
 import com.example.spacexapp.ui.recycle.viewHolder.OnClickImageViewHolder
 import com.example.spacexapp.ui.recycle.viewHolder.OnClickLaunch
-import com.example.spacexapp.util.createDiffUtil
+import com.example.spacexapp.util.extensions.createDiffUtil
 
 class LaunchesAdapter(
     private val onClickImage: OnClickImageViewHolder,

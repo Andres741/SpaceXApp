@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.ui.recycle.viewHolder.OnClickShipItem
 import com.example.spacexapp.ui.recycle.viewHolder.ShipViewHolder
-import com.example.spacexapp.util.createDiffUtil
+import com.example.spacexapp.util.extensions.createDiffUtil
 
 class ShipsAdapter(
     private val onClickNestedShip: OnClickShipItem,

@@ -8,7 +8,8 @@ import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.data.timeFormatted
 import com.example.spacexapp.databinding.LaunchItemBinding
 import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
-import com.example.spacexapp.util.*
+import com.example.spacexapp.util.extensions.makeNullIfEmpty
+import com.example.spacexapp.util.extensions.setTextOrGone
 
 class LaunchViewHolder private constructor(
     private val binding: LaunchItemBinding,
