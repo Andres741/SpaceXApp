@@ -35,6 +35,9 @@ class LoadingLaunchDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val args = LoadingLaunchDetailsFragmentArgs.fromBundle(arguments!!)
+        viewModel.setUp(args.launchId)
+
         viewModel.loadingStatus.collectOnUI(viewLifecycleOwner) {
 
             binding.apply {
@@ -48,9 +51,6 @@ class LoadingLaunchDetailsFragment : Fragment() {
                 )
             }
         }
-
-        val args = LoadingLaunchDetailsFragmentArgs.fromBundle(arguments!!)
-        viewModel.setUp(args.launchId)
     }
 
     override fun onDestroyView() {

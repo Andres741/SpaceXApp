@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -24,12 +22,10 @@ class LaunchDetailViewModel @Inject constructor(
     private val launchRepository: LaunchRepository
 ) : ViewModel() {
 
-    private lateinit var launchId: String
-
     private val connexionFlow = networkStatusFlowFactory.new
     private val _loadingStatus = MutableStateFlow(LoadDetailStatus.Loading as LoadDetailStatus)
 
-    private val haveToBeLoading = isPossibleTryLoadFlow(connexionFlow, _loadingStatus)
+    private val isPossibleLoad = isPossibleTryLoadFlow(connexionFlow, _loadingStatus)
     val loadingStatus: StateFlow<LoadDetailStatus> = _loadingStatus
 
 
@@ -37,21 +33,21 @@ class LaunchDetailViewModel @Inject constructor(
         private set
 
     fun setUp(launchId: String) {
-        this.launchId = launchId
-
+        _loadingStatus.value = LoadDetailStatus.Loading
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
 
-                tryLoad()
+                tryLoad(launchId)
 
-                haveToBeLoading.filter { it }.collectLatest {
-                    tryLoad()
+                isPossibleLoad.filter { it }.collectLatest {
+                    tryLoad(launchId)
                 }
             }
         }
     }
 
-    private suspend fun tryLoad() {
+    private suspend fun tryLoad(launchId: String) {
+        if (_loadingStatus.value is LoadDetailStatus.Loaded) return
         _loadingStatus.value = LoadDetailStatus.Loading
 
         val launchResult = launchRepository.getLaunch(launchId)
