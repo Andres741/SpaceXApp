@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.flow
 import java.net.InetSocketAddress
 import java.net.Socket
 
+
 sealed class NetworkStatus {
 
     abstract val isAvailable: Boolean
@@ -66,6 +67,7 @@ fun getNetworkStatusFlow(context: Context): Flow<NetworkStatus> = callbackFlow {
 //    connectivityManager.requestNetwork(networkRequest, connectivityManagerCallback, 100)
 
     awaitClose{
+        noNetJob?.cancel()
         connectivityManager.unregisterNetworkCallback(connectivityManagerCallback)
     }
 

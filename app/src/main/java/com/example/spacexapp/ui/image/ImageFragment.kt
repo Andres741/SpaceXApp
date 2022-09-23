@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
@@ -33,28 +34,10 @@ class ImageFragment: Fragment() {
 
         binding.loadImage(imageURL)
 
-        binding.apply {
-            error.setOnClickListener {
-                error.visibility = View.GONE
-                progressBar.visibility = View.VISIBLE
-                loadImage(imageURL)
-            }
-        }
-
         viewModel.loadImageStatusFlow.collectOnUI(viewLifecycleOwner) {
-            when(it) {
-                LoadImageStatus.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.error.visibility = View.GONE
-                }
-                LoadImageStatus.Loaded -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.error.visibility = View.GONE
-                }
-                LoadImageStatus.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.error.visibility = View.VISIBLE
-                }
+            binding.apply {
+                progressBar.isVisible = it is LoadImageStatus.Loading
+                error.isVisible = it is LoadImageStatus.Error
             }
         }
 

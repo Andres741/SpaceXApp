@@ -13,6 +13,7 @@ import androidx.paging.LoadStates
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
 import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
+import com.example.spacexapp.ui.recycle.adapter.LocationLoadingStateAdapter
 import com.example.spacexapp.util.*
 import com.example.spacexapp.util.extensions.collectOnUI
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,14 +34,22 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ) = FragmentMainBinding.inflate(inflater, container, false).apply {
         _binding = this
-        launchesRV.adapter = launchesAdapter
+        launchesRV.adapter = launchesAdapter.setUpAdapter()
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.observeViewModel()
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun LaunchesAdapter.setUpAdapter() = run {
         var cont = 0
-        launchesAdapter.loadStateFlow.collectOnUI(viewLifecycleOwner) {
+        loadStateFlow.collectOnUI(viewLifecycleOwner) {
             (++cont).log("Cont")
             it.apply {
                 prepend.log("prepend")
@@ -51,12 +60,10 @@ class MainFragment : Fragment() {
             viewModel.loadPageState.value = it.source.toLoadPageStatus()
         }
 
-        viewModel.observeViewModel()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        withLoadStateHeaderAndFooter(
+            header = LocationLoadingStateAdapter(),
+            footer = LocationLoadingStateAdapter(),
+        )
     }
 
     private fun MainViewModel.observeViewModel() {
