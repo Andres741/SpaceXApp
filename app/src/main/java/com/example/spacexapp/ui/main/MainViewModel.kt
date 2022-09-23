@@ -7,7 +7,7 @@ import com.example.spacexapp.data.LaunchRepository
 import com.example.spacexapp.util.LoadStatus
 import com.example.spacexapp.util.Logger
 import com.example.spacexapp.util.NetworkStatusFlowFactory
-import com.example.spacexapp.util.isPossibleLoadFlow
+import com.example.spacexapp.util.isPossibleTryLoadFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(
     val connexionFlow = networkStatusFlowFactory.new.shareIn(viewModelScope, SharingStarted.WhileSubscribed())
     val loadPageState = MutableStateFlow(LoadPageStatus.Loading as LoadPageStatus)
 
-    val haveToRetry = isPossibleLoadFlow(connexionFlow, loadPageState)
+    val haveToRetry = isPossibleTryLoadFlow(connexionFlow, loadPageState)
 
 
 

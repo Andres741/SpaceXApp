@@ -9,14 +9,31 @@
         android:id="@+id/MainFragment"
         android:name="com.example.spacexapp.ui.main.MainFragment"
         android:label="@string/launches"
-        tools:layout="@layout/fragment_main">
+        tools:layout="@layout/fragment_main"
+        >
 
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/DetailFragment" />
         <action
             android:id="@+id/action_MainFragment_to_imageFragment"
             app:destination="@id/imageFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_loadingLaunchDetailsFragment"
+            app:destination="@id/loadingLaunchDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loadingLaunchDetailsFragment"
+        android:name="com.example.spacexapp.ui.datail.LoadingLaunchDetailsFragment"
+        android:label="@string/loading_details"
+        tools:layout="@layout/fragment_loading"
+        >
+        <argument
+            android:name="launch_id"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_loadingLaunchDetailsFragment_to_DetailFragment"
+            app:destination="@id/DetailFragment"
+            app:popUpTo="@id/loadingLaunchDetailsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -24,9 +41,6 @@
         android:name="com.example.spacexapp.ui.datail.LaunchDetailFragment"
         android:label="@string/launch_detail"
         tools:layout="@layout/fragment_detail">
-        <argument
-            android:name="launch_id"
-            app:argType="string" />
     </fragment>
 
     <fragment

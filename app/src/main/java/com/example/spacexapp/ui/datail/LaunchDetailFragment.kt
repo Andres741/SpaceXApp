@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.spacexapp.databinding.FragmentDetailBinding
 import com.example.spacexapp.util.extensions.collectOnUI
@@ -17,7 +18,7 @@ class LaunchDetailFragment : Fragment() {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: LaunchDetailViewModel by viewModels()
+    private val viewModel: LaunchDetailViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -30,9 +31,6 @@ class LaunchDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args = LaunchDetailFragmentArgs.fromBundle(arguments!!)
-        viewModel.setUp(args.launchId)
-
         viewModel.observe()
     }
 
@@ -42,7 +40,7 @@ class LaunchDetailFragment : Fragment() {
     }
 
     private fun LaunchDetailViewModel.observe() {
-        missionNameFlow.collectOnUI(viewLifecycleOwner, binding.missionName::setText)
-        missionDetailsFlow.collectOnUI(viewLifecycleOwner, binding.description::setTextOrGone)
+        binding.missionName.text = launch.mission_name
+        binding.description.setTextOrGone(launch.details)
     }
 }

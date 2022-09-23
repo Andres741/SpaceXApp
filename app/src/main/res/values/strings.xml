@@ -4,6 +4,7 @@
     <!-- Strings used for fragments for navigation -->
     <string name="launches">Launches</string>
     <string name="launch_detail">Launch detail</string>
+    <string name="loading_details">Loading details</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 

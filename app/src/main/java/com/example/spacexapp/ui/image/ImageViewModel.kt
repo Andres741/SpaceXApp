@@ -22,7 +22,7 @@ class ImageViewModel @Inject constructor(
     private val connexionFlow = networkStatusFlowFactory.new.shareIn(loadScope, SharingStarted.WhileSubscribed())
     val loadImageStatusFlow = MutableStateFlow<LoadImageStatus>(LoadImageStatus.Loading)
 
-    val haveToRetry = isPossibleLoadFlow(connexionFlow, loadImageStatusFlow)
+    val haveToRetry = isPossibleTryLoadFlow(connexionFlow, loadImageStatusFlow)
 
     init {
         viewModelScope.launch {
