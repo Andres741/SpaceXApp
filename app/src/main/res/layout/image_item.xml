@@ -15,7 +15,7 @@
     android:layout_margin="3dp"
     app:contentPadding="4dp"
 
-    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardBackgroundColor="?attr/nestedCardColor"
     >
     <ImageView
         android:id="@+id/image"

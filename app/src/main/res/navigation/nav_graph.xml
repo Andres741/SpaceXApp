@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/MainFragment"
         android:name="com.example.spacexapp.ui.main.MainFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/launches"
         tools:layout="@layout/fragment_main">
 
         <action
@@ -22,7 +22,7 @@
     <fragment
         android:id="@+id/DetailFragment"
         android:name="com.example.spacexapp.ui.datail.LaunchDetailFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/launch_detail"
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="launch_id"

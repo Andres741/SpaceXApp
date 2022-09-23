@@ -15,7 +15,7 @@
     android:layout_margin="4dp"
     app:contentPadding="8dp"
 
-    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardBackgroundColor="?attr/cardBackgroundColor"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
