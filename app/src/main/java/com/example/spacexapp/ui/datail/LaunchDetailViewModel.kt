@@ -44,7 +44,7 @@ class LaunchDetailViewModel @Inject constructor(
 
                 tryLoad()
 
-                haveToBeLoading.filter { it }.collect {  // no latest!!!
+                haveToBeLoading.filter { it }.collectLatest {
                     tryLoad()
                 }
             }
