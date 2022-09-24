@@ -89,6 +89,18 @@
             />
 
         <TextView
+            android:id="@+id/launch_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/launch_date_utc"
+            app:layout_constraintTop_toBottomOf="@+id/launch_date_utc"
+
+            tools:text="@string/successful"
+            />
+
+        <TextView
             android:id="@+id/images"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

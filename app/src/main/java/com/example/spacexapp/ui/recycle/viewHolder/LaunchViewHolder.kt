@@ -5,10 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spacexapp.LaunchesQuery
+import com.example.spacexapp.R
 import com.example.spacexapp.data.timeFormatted
 import com.example.spacexapp.databinding.LaunchItemBinding
 import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
 import com.example.spacexapp.util.extensions.makeNullIfEmpty
+import com.example.spacexapp.util.extensions.setTextOption
 import com.example.spacexapp.util.extensions.setTextOrGone
 
 class LaunchViewHolder private constructor(
@@ -46,6 +48,7 @@ class LaunchViewHolder private constructor(
             rocketName.setTextOrGone(launch.rocket?.rocket?.name)
             launchDateUtc.setTextOrGone(launch.timeFormatted)
             details.setTextOrGone(launch.details)
+            launchSuccess.setTextOption(launch.launch_success, R.string.successful, R.string.failed)
 
             launch.links?.flickr_images.makeNullIfEmpty()?.also { imageURLs ->
                 images.visibility = View.VISIBLE
