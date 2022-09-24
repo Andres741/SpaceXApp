@@ -8,12 +8,12 @@ import com.example.spacexapp.ui.recycle.viewHolder.ShipViewHolder
 import com.example.spacexapp.util.extensions.createDiffUtil
 
 class ShipsAdapter(
-    private val onClickNestedShip: OnClickShipItem,
+    private val onClickShip: OnClickShipItem,
 ): ListAdapter<LaunchQuery.Ship, ShipViewHolder>(
     createDiffUtil({ old, new -> old.id == new.id }, LaunchQuery.Ship::equals)
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ShipViewHolder.create(parent, onClickNestedShip)
+        ShipViewHolder.create(parent, onClickShip)
 
     override fun onBindViewHolder(holder: ShipViewHolder, position: Int) {
         getItem(position)?.also(holder::bind)

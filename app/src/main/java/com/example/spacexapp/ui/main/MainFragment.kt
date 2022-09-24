@@ -92,7 +92,7 @@ class MainFragment : Fragment() {
     }
 
     private fun navigateToImage(imageURL: String) {
-        Log.d("MainFragment", "clicked image $imageURL")
+        "clicked image $imageURL".log()
         findNavController().navigate(
             MainFragmentDirections.actionMainFragmentToImageFragment(imageURL)
         )

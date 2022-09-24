@@ -1,8 +1,13 @@
 package com.example.spacexapp.util.extensions
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.DiffUtil
@@ -37,6 +42,22 @@ fun TextView.setTextOption(option: Boolean?, @StringRes firstOpt: Int, @StringRe
         null -> null
     }
     setTextOrGone(selected)
+}
+
+fun View.putWebLink(context: Context, URL: String) {
+    setOnClickListener {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(URL))
+        startActivity(context, browserIntent, null)
+    }
+}
+
+fun View.putWebLinkOrGone(context: Context, URL: String?) {
+    if (URL == null) {
+        isVisible = false
+        return
+    }
+    isVisible = true
+    putWebLink(context, URL)
 }
 
 inline val Fragment.viewLifecycle get() = viewLifecycleOwner.lifecycle

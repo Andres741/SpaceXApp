@@ -1,16 +1,24 @@
 package com.example.spacexapp.ui.datail
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.spacexapp.R
+import com.example.spacexapp.data.timeFormatted
 import com.example.spacexapp.databinding.FragmentDetailBinding
-import com.example.spacexapp.util.extensions.collectOnUI
-import com.example.spacexapp.util.extensions.setTextOrGone
+import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
+import com.example.spacexapp.ui.recycle.adapter.ShipsAdapter
+import com.example.spacexapp.util.Logger
+import com.example.spacexapp.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class LaunchDetailFragment : Fragment() {
@@ -40,7 +48,59 @@ class LaunchDetailFragment : Fragment() {
     }
 
     private fun LaunchDetailViewModel.observe() {
-        binding.missionName.text = launch.mission_name
-        binding.description.setTextOrGone(launch.details)
+        binding.apply {
+            missionName.text = launch.mission_name
+            launchSite.setTextOrGone(launch.launch_site?.site_name_long)
+            description.setTextOrGone(launch.details)
+            launchDateUtc.setTextOrGone(launch.timeFormatted)
+            launchSuccess.setTextOption(launch.launch_success, R.string.successful, R.string.failed)
+
+            launch.links?.apply {
+                articleLink.putWebLinkOrGone(context!!, article_link)
+                videoLink.putWebLinkOrGone(context!!, video_link)
+            }
+
+            launch.links?.flickr_images.makeNullIfEmpty()?.also { imageURLs ->
+                images.adapter = ImagesAdapter(::navigateToImage).apply {
+                    list = imageURLs
+                }
+            }
+
+            launch.rocket?.rocket?.also { rocket ->
+                rocketInfo.isVisible = true
+                rocketName.text = rocket.name
+                rocketDescription.setTextOrGone(rocket.description)
+                rocketCompany.setTextOrGone(rocket.company)
+
+                roketWikiLink.putWebLinkOrGone(context!!, rocket.wikipedia)
+
+            } ?: kotlin.run {
+                rocketInfo.isVisible = false
+            }
+
+            launch.ships.makeNullIfEmpty()?.also { ships ->
+                shipsRv.adapter = ShipsAdapter {
+                    if (it.image == null) {
+                        Toast.makeText(context, R.string.ship_no_image, Toast.LENGTH_SHORT).show()
+                        return@ShipsAdapter
+                    }
+                    navigateToImage(it.image)
+                }.apply {
+                    list = ships
+                }
+            } ?: kotlin.run {
+                shipsInfo.isVisible = false
+            }
+        }
     }
+
+    private fun navigateToImage(imageURL: String) {
+        "clicked image $imageURL".log()
+        findNavController().navigate(
+            LaunchDetailFragmentDirections.actionDetailFragmentToImageFragment(imageURL)
+        )
+    }
+
+    private val logger = Logger("LaunchDetailFragment")
+    private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
 }

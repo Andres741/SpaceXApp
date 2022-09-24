@@ -6,7 +6,7 @@
 
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    tools:layout_height="180dp"
+    tools:layout_height="300dp"
 
     android:clickable="true"
     android:elevation="16dp"
@@ -16,7 +16,7 @@
     android:layout_margin="3dp"
     app:contentPadding="4dp"
 
-    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardBackgroundColor="?attr/nestedCardColor"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         <ImageView
             android:id="@+id/ship_image"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="220dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

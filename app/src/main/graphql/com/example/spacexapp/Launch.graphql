@@ -10,8 +10,10 @@ query Launch($launchId: ID!){
         rocket {
             rocket {
                 id
-                company
                 name
+                company
+                description
+                wikipedia
             }
         }
         links {
