@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.spacexapp.databinding.FragmentLoadingBinding
 import com.example.spacexapp.util.Logger
 import com.example.spacexapp.util.extensions.collectOnUI
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.filterNot
 
 
 @AndroidEntryPoint
@@ -36,7 +34,8 @@ class LoadingLaunchDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val args = LoadingLaunchDetailsFragmentArgs.fromBundle(arguments!!)
-        viewModel.setUp(args.launchId)
+
+        viewModel.setLoading()
 
         viewModel.loadingStatus.collectOnUI(viewLifecycleOwner) {
 
@@ -51,6 +50,8 @@ class LoadingLaunchDetailsFragment : Fragment() {
                 )
             }
         }
+
+        viewModel.loadData(args.launchId)
     }
 
     override fun onDestroyView() {

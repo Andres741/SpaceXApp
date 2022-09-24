@@ -5,12 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.data.LaunchRepository
 import com.example.spacexapp.util.*
+import com.example.spacexapp.util.extensions.ifFalse
+import com.example.spacexapp.util.extensions.ifTrue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -32,9 +31,8 @@ class LaunchDetailViewModel @Inject constructor(
     lateinit var launch: LaunchQuery.Launch
         private set
 
-    fun setUp(launchId: String) {
-        _loadingStatus.value = LoadDetailStatus.Loading
-        viewModelScope.launch {
+    fun loadData(launchId: String) {
+        val tryLoadJob = viewModelScope.launch {
             withContext(Dispatchers.Default) {
 
                 tryLoad(launchId)
@@ -44,15 +42,27 @@ class LaunchDetailViewModel @Inject constructor(
                 }
             }
         }
+        viewModelScope.launch {
+            loadingStatus.takeWhile { (it !is LoadDetailStatus.Loaded).ifFalse {
+                tryLoadJob.cancel()
+            } }.collectLatest {  }
+        }
+    }
+
+    fun setLoading() {
+        _loadingStatus.value = LoadDetailStatus.Loading
     }
 
     private suspend fun tryLoad(launchId: String) {
         if (_loadingStatus.value is LoadDetailStatus.Loaded) return
         _loadingStatus.value = LoadDetailStatus.Loading
 
-        val launchResult = launchRepository.getLaunch(launchId)
+        val launchResult = launchRepository.getLaunch(launchId.log("launchId"))
 
         launchResult.onSuccess {
+            it.launch?.id.log("id")
+            it.launch?.mission_name.log("mission_name")
+
             launch = it.launch!!
             _loadingStatus.value = LoadDetailStatus.Loaded
             return

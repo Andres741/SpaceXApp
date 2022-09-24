@@ -1,7 +1,6 @@
 package com.example.spacexapp.ui.datail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,7 +71,7 @@ class LaunchDetailFragment : Fragment() {
                 rocketDescription.setTextOrGone(rocket.description)
                 rocketCompany.setTextOrGone(rocket.company)
 
-                roketWikiLink.putWebLinkOrGone(context!!, rocket.wikipedia)
+                rocketWikiLink.putWebLinkOrGone(context!!, rocket.wikipedia)
 
             } ?: kotlin.run {
                 rocketInfo.isVisible = false

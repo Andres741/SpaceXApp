@@ -1,4 +1,4 @@
-package com.example.spacexapp.ui.recycle.adapter
+package com.example.spacexapp.ui.recycle.viewHolder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
