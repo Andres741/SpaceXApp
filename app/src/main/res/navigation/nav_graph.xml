@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_loading"
         >
         <argument
-            android:name="launch_id"
+            android:name="loadKey"
             app:argType="string" />
         <action
             android:id="@+id/action_loadingLaunchDetailsFragment_to_DetailFragment"

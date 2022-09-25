@@ -51,7 +51,7 @@ class LoadingLaunchDetailsFragment : Fragment() {
             }
         }
 
-        viewModel.loadData(args.launchId)
+        viewModel.loadData(args.loadKey)
     }
 
     override fun onDestroyView() {
@@ -59,6 +59,6 @@ class LoadingLaunchDetailsFragment : Fragment() {
         _binding = null
     }
 
-    private val logger = Logger("MainFragment")
+    private val logger = Logger("LoadingLaunchDetailsFragment")
     private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
 }

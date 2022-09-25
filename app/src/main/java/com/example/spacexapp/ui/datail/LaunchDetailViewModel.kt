@@ -32,20 +32,17 @@ class LaunchDetailViewModel @Inject constructor(
         private set
 
     fun loadData(launchId: String) {
-        val tryLoadJob = viewModelScope.launch {
-            withContext(Dispatchers.Default) {
+        val tryLoadJob = viewModelScope.launch(Dispatchers.Default) {
 
+            tryLoad(launchId)
+
+            isPossibleLoad.filter { it }.collectLatest {
                 tryLoad(launchId)
-
-                isPossibleLoad.filter { it }.collectLatest {
-                    tryLoad(launchId)
-                }
             }
         }
-        viewModelScope.launch {
-            loadingStatus.takeWhile { (it !is LoadDetailStatus.Loaded).ifFalse {
-                tryLoadJob.cancel()
-            } }.collectLatest {  }
+        viewModelScope.launch(Dispatchers.Default) {
+            loadingStatus.awaitLoadFinish()
+            tryLoadJob.cancel()
         }
     }
 
@@ -57,13 +54,10 @@ class LaunchDetailViewModel @Inject constructor(
         if (_loadingStatus.value is LoadDetailStatus.Loaded) return
         _loadingStatus.value = LoadDetailStatus.Loading
 
-        val launchResult = launchRepository.getLaunch(launchId.log("launchId"))
+        val launchResult = launchRepository.getLaunch(launchId)
 
-        launchResult.onSuccess {
-            it.launch?.id.log("id")
-            it.launch?.mission_name.log("mission_name")
-
-            launch = it.launch!!
+        launchResult.onSuccess { data ->
+            launch = data.launch!!
             _loadingStatus.value = LoadDetailStatus.Loaded
             return
         }

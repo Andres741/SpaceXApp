@@ -21,6 +21,8 @@ sealed class NetworkStatus {
 
     abstract val isAvailable: Boolean
 
+    val isNotAvailable get() = ! isAvailable
+
     object Available : NetworkStatus() {
         override val isAvailable = true
     }
