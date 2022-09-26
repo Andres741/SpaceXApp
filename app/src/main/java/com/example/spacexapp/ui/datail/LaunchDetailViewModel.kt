@@ -24,45 +24,58 @@ class LaunchDetailViewModel @Inject constructor(
     private val connexionFlow = networkStatusFlowFactory.new
     private val _loadingStatus = MutableStateFlow(LoadDetailStatus.Loading as LoadDetailStatus)
 
-    private val isPossibleLoad = isPossibleTryLoadFlow(connexionFlow, _loadingStatus)
     val loadingStatus: StateFlow<LoadDetailStatus> = _loadingStatus
 
+    private val loadingCallbacks = LoadingCallbacks<LaunchQuery.Data>(
+        onLoading = { _loadingStatus.value = LoadDetailStatus.Loading },
+        onError = { _loadingStatus.value = LoadDetailStatus.Error },
+    )
 
     lateinit var launch: LaunchQuery.Launch
         private set
-
-    fun loadData(launchId: String) {
-        val tryLoadJob = viewModelScope.launch(Dispatchers.Default) {
-
-            tryLoad(launchId)
-
-            isPossibleLoad.filter { it }.collectLatest {
-                tryLoad(launchId)
-            }
-        }
-        viewModelScope.launch(Dispatchers.Default) {
-            loadingStatus.awaitLoadFinish()
-            tryLoadJob.cancel()
-        }
-    }
 
     fun setLoading() {
         _loadingStatus.value = LoadDetailStatus.Loading
     }
 
-    private suspend fun tryLoad(launchId: String) {
-        if (_loadingStatus.value is LoadDetailStatus.Loaded) return
-        _loadingStatus.value = LoadDetailStatus.Loading
+    fun loadData(launchId: String) {
+        viewModelScope.launch(Dispatchers.Default) {
+            launch = load(connexionFlow, loadingCallbacks) {
+                launchRepository.getLaunch(launchId)
+            }.launch!!
 
-        val launchResult = launchRepository.getLaunch(launchId)
-
-        launchResult.onSuccess { data ->
-            launch = data.launch!!
             _loadingStatus.value = LoadDetailStatus.Loaded
-            return
         }
-        _loadingStatus.value = LoadDetailStatus.Error
     }
+
+//    private val isPossibleLoad = isPossibleTryLoadFlow(connexionFlow, _loadingStatus)
+//    fun loadData(launchId: String) {
+//        val tryLoadJob = viewModelScope.launch(Dispatchers.Default) {
+//
+//            tryLoad(launchId)
+//
+//            isPossibleLoad.filter { it }.collectLatest {
+//                tryLoad(launchId)
+//            }
+//        }
+//        viewModelScope.launch(Dispatchers.Default) {
+//            loadingStatus.awaitLoadFinish()
+//            tryLoadJob.cancel()
+//        }
+//    }
+//    private suspend fun tryLoad(launchId: String) {
+//        if (_loadingStatus.value is LoadDetailStatus.Loaded) return
+//        _loadingStatus.value = LoadDetailStatus.Loading
+//
+//        val launchResult = launchRepository.getLaunch(launchId)
+//
+//        launchResult.onSuccess { data ->
+//            launch = data.launch!!
+//            _loadingStatus.value = LoadDetailStatus.Loaded
+//            return
+//        }
+//        _loadingStatus.value = LoadDetailStatus.Error
+//    }
 
     private val logger = Logger("LaunchDetailViewModel")
     private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
