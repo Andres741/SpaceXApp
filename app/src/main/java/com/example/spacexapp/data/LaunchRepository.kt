@@ -42,6 +42,6 @@ class LaunchRepository @Inject constructor(
     ).flow
 
     companion object {
-        private const val NETWORK_PAGE_SIZE = 5
+        private const val NETWORK_PAGE_SIZE = 12
     }
 }

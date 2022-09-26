@@ -55,8 +55,8 @@ class LaunchDetailFragment : Fragment() {
             launchSuccess.setTextOption(launch.launch_success, R.string.successful, R.string.failed)
 
             launch.links?.apply {
-                articleLink.putWebLinkOrGone(context!!, article_link)
-                videoLink.putWebLinkOrGone(context!!, video_link)
+                articleLink.putWebLinkOrGone(article_link)
+                videoLink.putWebLinkOrGone(video_link)
             }
 
             launch.links?.flickr_images.makeNullIfEmpty()?.also { imageURLs ->
@@ -71,7 +71,7 @@ class LaunchDetailFragment : Fragment() {
                 rocketDescription.setTextOrGone(rocket.description)
                 rocketCompany.setTextOrGone(rocket.company)
 
-                rocketWikiLink.putWebLinkOrGone(context!!, rocket.wikipedia)
+                rocketWikiLink.putWebLinkOrGone(rocket.wikipedia)
 
             } ?: kotlin.run {
                 rocketInfo.isVisible = false

@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 fun TextView.setTextOrGone(newText: String?) {
     if (newText.isNullOrBlank()) {
         visibility = View.GONE
-        text = ""
+        text = newText
         return
     }
     visibility = View.VISIBLE
@@ -44,20 +44,20 @@ fun TextView.setTextOption(option: Boolean?, @StringRes firstOpt: Int, @StringRe
     setTextOrGone(selected)
 }
 
-fun View.putWebLink(context: Context, URL: String) {
+fun View.putWebLink(URL: String) {
     setOnClickListener {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(URL))
-        startActivity(context, browserIntent, null)
+        startActivity(it.context, browserIntent, null)
     }
 }
 
-fun View.putWebLinkOrGone(context: Context, URL: String?) {
+fun View.putWebLinkOrGone(URL: String?) {
     if (URL == null) {
         isVisible = false
         return
     }
     isVisible = true
-    putWebLink(context, URL)
+    putWebLink(URL)
 }
 
 inline val Fragment.viewLifecycle get() = viewLifecycleOwner.lifecycle

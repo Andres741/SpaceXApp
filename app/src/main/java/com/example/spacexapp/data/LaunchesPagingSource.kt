@@ -18,15 +18,6 @@ class LaunchesPagingSource (
 
             val launchesPage = response.launches
 
-//            LoadResult.Page(
-//                data = launchesPage.makeNotNull().apply {
-//                    asSequence().map(LaunchesQuery.Launch::mission_name).asIterable().logList("new page")
-//                    "-------------------------------".log()
-//                },
-//                prevKey = ((offset.log("  key") - loadSize).run { if (this > INITIAL_INDEX) this else null }).log("  prev key"),
-//                nextKey = (if ((launchesPage?.size ?: -1) < loadSize) null else offset + loadSize).log("  next key")
-//            )
-
             LoadResult.Page(
                 data = launchesPage.makeNotNull(),
                 prevKey = (offset - loadSize).takeIf { it > INITIAL_INDEX },
