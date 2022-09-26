@@ -13,6 +13,7 @@ import com.example.spacexapp.util.*
 import com.example.spacexapp.util.extensions.collectOnUI
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class ImageFragment: Fragment() {
 
@@ -32,33 +33,12 @@ class ImageFragment: Fragment() {
 
         val imageURL = ImageFragmentArgs.fromBundle(arguments!!).imageURL
 
-        binding.loadImage(imageURL)
+        viewModel.loadImage(imageURL)
+        viewModel.loadImageStatusFlow.collectOnUI(viewLifecycleOwner) { status ->
+            binding.progressBar.isVisible = status is LoadImageStatus.Loading
+            binding.error.isVisible = status is LoadImageStatus.Error
 
-        viewModel.loadImageStatusFlow.collectOnUI(viewLifecycleOwner) {
-            binding.apply {
-                progressBar.isVisible = it is LoadImageStatus.Loading
-                error.isVisible = it is LoadImageStatus.Error
-            }
-        }
-
-        viewModel.haveToRetry.collectOnUI(viewLifecycleOwner) {
-            if (it) binding.loadImage(imageURL)
-        }
-    }
-
-    private fun FragmentImageBinding.loadImage(imageURL: String) {
-
-        viewModel.loadImageStatusFlow.value = LoadImageStatus.Loading
-
-        image.load("$imageURL/") {
-            listener(
-                onSuccess = { _, _ ->
-                    viewModel.loadImageStatusFlow.value = LoadImageStatus.Loaded
-                },
-                onError = { _, _ ->
-                    viewModel.loadImageStatusFlow.value = LoadImageStatus.Error
-                }
-            )
+            (status as? LoadImageStatus.Loaded)?.drawable?.also(binding.image::load)
         }
     }
 

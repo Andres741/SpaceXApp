@@ -27,6 +27,5 @@
         android:layout_gravity="center"
         android:src="@drawable/no_internet_white"
         android:contentDescription="@string/no_internet"
-        android:visibility="gone"
         />
 </FrameLayout>

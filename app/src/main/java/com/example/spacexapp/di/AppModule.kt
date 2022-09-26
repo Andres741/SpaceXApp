@@ -1,6 +1,7 @@
 package com.example.spacexapp.di
 
 import android.content.Context
+import com.example.spacexapp.data.ImageDownloader
 import com.example.spacexapp.data.buildApollo
 import com.example.spacexapp.util.NetworkStatusFlowFactory
 import com.example.spacexapp.util.getNetworkStatusFlow
@@ -21,5 +22,9 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesConnexionFlow(@ApplicationContext context: Context) = NetworkStatusFlowFactory(context)
+    fun provideConnexionFlow(@ApplicationContext context: Context) = NetworkStatusFlowFactory(context)
+
+    @Singleton
+    @Provides
+    fun provideImageDownloader(@ApplicationContext context: Context) = ImageDownloader(context)
 }

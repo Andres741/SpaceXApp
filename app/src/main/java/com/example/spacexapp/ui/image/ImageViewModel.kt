@@ -1,7 +1,9 @@
 package com.example.spacexapp.ui.image
 
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.spacexapp.data.ImageDownloader
 import com.example.spacexapp.util.*
 import com.example.spacexapp.util.extensions.ifTrue
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,23 +14,27 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class ImageViewModel @Inject constructor(
-    networkStatusFlowFactory: NetworkStatusFlowFactory
+    networkStatusFlowFactory: NetworkStatusFlowFactory,
+    private val imageDownloader: ImageDownloader,
 ): ViewModel() {
 
-    private val loadScope = CoroutineScope(Dispatchers.IO)
-
-    private val connexionFlow = networkStatusFlowFactory.new.shareIn(loadScope, SharingStarted.WhileSubscribed())
+    private val connexionFlow = networkStatusFlowFactory.new
     val loadImageStatusFlow = MutableStateFlow<LoadImageStatus>(LoadImageStatus.Loading)
 
-    val haveToRetry = isPossibleTryLoadFlow(connexionFlow, loadImageStatusFlow)
+    private val loadingCallbacks = LoadingCallbacks<Drawable?>(
+        onLoading = { loadImageStatusFlow.value = LoadImageStatus.Loading },
+        onError = { loadImageStatusFlow.value = LoadImageStatus.Error },
+    )
 
-    init {
+    fun loadImage(imageURL: String) {
         viewModelScope.launch {
-            loadImageStatusFlow.takeWhile {
-                (it is LoadImageStatus.Loaded).ifTrue(loadScope::cancel)
+            val drawable = load(connexionFlow, loadingCallbacks) {
+                imageDownloader.getImage("$imageURL/")
             }
+            loadImageStatusFlow.value = LoadImageStatus.Loaded(drawable)
         }
     }
 
@@ -37,7 +43,7 @@ class ImageViewModel @Inject constructor(
 }
 
 sealed class LoadImageStatus: LoadStatus {
-    object Loaded: LoadImageStatus(), LoadStatus.Loaded
+    data class Loaded(val drawable: Drawable?): LoadImageStatus(), LoadStatus.Loaded
     object Loading: LoadImageStatus(), LoadStatus.Loading
     object Error: LoadImageStatus(), LoadStatus.Error
 }
