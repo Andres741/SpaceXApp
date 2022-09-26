@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/loadingLaunchDetailsFragment"
         android:name="com.example.spacexapp.ui.datail.LoadingLaunchDetailsFragment"
-        android:label="@string/loading_details"
+        android:label="@string/loading"
         tools:layout="@layout/fragment_loading"
         >
         <argument
@@ -49,7 +49,7 @@
     <fragment
         android:id="@+id/imageFragment"
         android:name="com.example.spacexapp.ui.image.ImageFragment"
-        android:label="ImageFragment"
+        android:label="@string/image"
         tools:layout="@layout/fragment_image">
         <argument
             android:name="imageURL"

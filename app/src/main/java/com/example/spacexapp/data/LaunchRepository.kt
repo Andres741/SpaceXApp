@@ -22,23 +22,26 @@ class LaunchRepository @Inject constructor(
         apolloClient.query(LaunchesQuery()).execute().dataAssertNoErrors
     }
 
-    suspend fun getPage(perPage: Int, page: Int) = kotlin.runCatching {
+    suspend fun getLaunches(limit: Int, offset: Int) = kotlin.runCatching {
         apolloClient.query(
             LaunchesQuery(
-                limit = Optional.present(perPage),
-                offset = Optional.present(perPage * page),
+                limit = Optional.present(limit),
+                offset = Optional.present(offset),
                 sort = Optional.present("launch_date_utc"),
                 order = Optional.present("desc")
             )
         ).execute().dataAssertNoErrors
     }
 
+    suspend fun getPage(perPage: Int, page: Int) = getLaunches(perPage, perPage * page)
+
+
     fun getLaunchesDataFlow(): Flow<PagingData<LaunchesQuery.Launch>> = Pager(
         config = PagingConfig(enablePlaceholders = false, pageSize = NETWORK_PAGE_SIZE),
-        pagingSourceFactory = { LaunchesPagingSource(::getPage) }
+        pagingSourceFactory = { LaunchesPagingSource(::getLaunches) }
     ).flow
 
     companion object {
-        private const val NETWORK_PAGE_SIZE = 12
+        private const val NETWORK_PAGE_SIZE = 5
     }
 }

@@ -11,16 +11,26 @@ class LaunchesPagingSource (
 ): PagingSource<Int, LaunchesQuery.Launch>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LaunchesQuery.Launch> {
-        val page = params.key ?: INITIAL_INDEX
+        val offset = params.key ?: INITIAL_INDEX
+        val loadSize = params.loadSize
 
-        return launchPageProvider(params.loadSize, page).fold({ response ->
+        return launchPageProvider(loadSize, offset).fold({ response ->
 
             val launchesPage = response.launches
 
+//            LoadResult.Page(
+//                data = launchesPage.makeNotNull().apply {
+//                    asSequence().map(LaunchesQuery.Launch::mission_name).asIterable().logList("new page")
+//                    "-------------------------------".log()
+//                },
+//                prevKey = ((offset.log("  key") - loadSize).run { if (this > INITIAL_INDEX) this else null }).log("  prev key"),
+//                nextKey = (if ((launchesPage?.size ?: -1) < loadSize) null else offset + loadSize).log("  next key")
+//            )
+
             LoadResult.Page(
-                data = launchesPage.makeNotNull().logListSize("page size"),
-                prevKey = if (page == INITIAL_INDEX) null else page - 1,
-                nextKey = if (launchesPage.isNullOrEmpty()) null else page + 1
+                data = launchesPage.makeNotNull(),
+                prevKey = (offset - loadSize).takeIf { it > INITIAL_INDEX },
+                nextKey = if ((launchesPage?.size ?: -1) < loadSize) null else offset + loadSize
             )
         }, { e ->
             LoadResult.Error(e.log("error"))
@@ -38,7 +48,7 @@ class LaunchesPagingSource (
     }
 }
 
-typealias LaunchPageProvider = suspend (perPage: Int, page: Int) -> Result<LaunchesQuery.Data>
+typealias LaunchPageProvider = suspend (loadSize: Int, offset: Int) -> Result<LaunchesQuery.Data>
 
 private val logger = Logger("LaunchesPagingSource")
 private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
