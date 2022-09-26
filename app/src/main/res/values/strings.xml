@@ -36,5 +36,6 @@
     <string name="links">Links:</string>
     <string name="video">video</string>
     <string name="ship_no_image">This ship doesn\'t have image</string>
+    <string name="download_image">Download Image</string>
 
 </resources>

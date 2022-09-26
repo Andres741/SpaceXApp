@@ -22,11 +22,13 @@ class ImageViewModel @Inject constructor(
 ): ViewModel() {
 
     private val connexionFlow = networkStatusFlowFactory.new
-    val loadImageStatusFlow = MutableStateFlow<LoadImageStatus>(LoadImageStatus.Loading)
+
+    private val _loadImageStatusFlow = MutableStateFlow<LoadImageStatus>(LoadImageStatus.Loading)
+    val loadImageStatusFlow: StateFlow<LoadImageStatus> = _loadImageStatusFlow
 
     private val loadingCallbacks = LoadingCallbacks<Drawable?>(
-        onLoading = { loadImageStatusFlow.value = LoadImageStatus.Loading },
-        onError = { loadImageStatusFlow.value = LoadImageStatus.Error },
+        onLoading = { _loadImageStatusFlow.value = LoadImageStatus.Loading },
+        onError = { _loadImageStatusFlow.value = LoadImageStatus.Error },
     )
 
     fun loadImage(imageURL: String) {
@@ -34,7 +36,7 @@ class ImageViewModel @Inject constructor(
             val drawable = load(connexionFlow, loadingCallbacks) {
                 imageDownloader.getImage("$imageURL/")
             }
-            loadImageStatusFlow.value = LoadImageStatus.Loaded(drawable)
+            _loadImageStatusFlow.value = LoadImageStatus.Loaded(drawable)
         }
     }
 
