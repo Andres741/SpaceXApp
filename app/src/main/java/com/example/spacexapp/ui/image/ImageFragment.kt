@@ -1,8 +1,9 @@
 package com.example.spacexapp.ui.image
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -14,7 +15,6 @@ import com.example.spacexapp.util.*
 import com.example.spacexapp.util.extensions.collectOnUI
 import com.example.spacexapp.util.extensions.saveImageToStorage
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.FileOutputStream
 
 
 @AndroidEntryPoint
@@ -47,15 +47,24 @@ class ImageFragment: Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.download_image, menu)
+        inflater.inflate(R.menu.save_image, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.download_image -> {
-                val image = (viewModel.loadImageStatusFlow.value as? LoadImageStatus.Loaded)?.drawable ?: return true
+            R.id.save_image -> {
 
-                saveImageToStorage(context!!, image.toBitmap())
+                @StringRes
+                val msj: Int = kotlin.run {
+                    val image =
+                        (viewModel.loadImageStatusFlow.value as? LoadImageStatus.Loaded)?.drawable ?: return@run R.string.image_not_available
+
+                    val isImageSaved = saveImageToStorage(context = context!!, bitmap = image.toBitmap())
+
+                    return@run if (isImageSaved) R.string.image_saved else R.string.save_image_error
+                }
+
+                Toast.makeText(context, msj, Toast.LENGTH_SHORT).show()
             }
             else -> return super.onOptionsItemSelected(item)
         }

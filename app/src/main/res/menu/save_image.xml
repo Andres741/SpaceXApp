@@ -5,8 +5,8 @@
     tools:context="com.example.spacexapp.ui.image.ImageFragment"
     >
     <item
-        android:id="@+id/download_image"
-        android:title="@string/download_image"
+        android:id="@+id/save_image"
+        android:title="@string/save_image"
         app:showAsAction="never"
         />
 </menu>
