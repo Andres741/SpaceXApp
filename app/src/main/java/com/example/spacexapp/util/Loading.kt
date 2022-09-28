@@ -1,6 +1,7 @@
 package com.example.spacexapp.util
 
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -27,19 +28,23 @@ suspend fun Flow<LoadStatus>.awaitLoadFinish() {
     takeWhile { it !is LoadStatus.Loaded }.lastOrNull()
 }
 
-// Not tested
-suspend fun<T> load(networkStatusFlow: Flow<NetworkStatus>, loadingCallbacks: LoadingCallbacks<T>, loader: suspend () -> Result<T>): T {
+suspend inline fun <T: Any> load(
+    networkStatusFlow: Flow<NetworkStatus>,
+    crossinline onLoading: () -> Unit,
+    crossinline onError: (Throwable) -> Unit,
+    crossinline loader: suspend () -> Result<T>,
+): T {
     var res: T? = null
     supervisorScope {
         launch {
             networkStatusFlow.collectLatest { net ->
                 if (net.isNotAvailable) {
-                    loadingCallbacks.onError(IOException("Internet connexion lost"))
+                    onError(IOException("Internet connexion lost"))
                     return@collectLatest
                 }
 
                 do {
-                    loadingCallbacks.onLoading()
+                    onLoading()
                     val result = loader()
 
                     val isFailure = result.fold(
@@ -49,7 +54,8 @@ suspend fun<T> load(networkStatusFlow: Flow<NetworkStatus>, loadingCallbacks: Lo
                             false
                         },
                         onFailure = { t ->
-                            loadingCallbacks.onError(t)
+                            onError(t)
+                            delay(10)
                             true
                         }
                     )
@@ -60,7 +66,7 @@ suspend fun<T> load(networkStatusFlow: Flow<NetworkStatus>, loadingCallbacks: Lo
     return res!!
 }
 
-data class LoadingCallbacks<T>(
+data class LoadingCallbacks(
     val onLoading: () -> Unit,
     val onError: (Throwable) -> Unit,
 )

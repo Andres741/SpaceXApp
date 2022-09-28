@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import okio.IOException
 import javax.inject.Inject
 
 
@@ -26,15 +27,15 @@ class ImageViewModel @Inject constructor(
     private val _loadImageStatusFlow = MutableStateFlow<LoadImageStatus>(LoadImageStatus.Loading)
     val loadImageStatusFlow: StateFlow<LoadImageStatus> = _loadImageStatusFlow
 
-    private val loadingCallbacks = LoadingCallbacks<Drawable?>(
-        onLoading = { _loadImageStatusFlow.value = LoadImageStatus.Loading },
-        onError = { _loadImageStatusFlow.value = LoadImageStatus.Error },
-    )
 
     fun loadImage(imageURL: String) {
         viewModelScope.launch {
-            val drawable = load(connexionFlow, loadingCallbacks) {
-                imageDownloader.getImage("$imageURL/")
+            val drawable = load(
+                connexionFlow,
+                onLoading = { _loadImageStatusFlow.value = LoadImageStatus.Loading },
+                onError = { _loadImageStatusFlow.value = LoadImageStatus.Error }
+            ) {
+                imageDownloader.getImage("$imageURL/").mapCatching { it ?: throw IOException("Load image failed") }
             }
             _loadImageStatusFlow.value = LoadImageStatus.Loaded(drawable)
         }

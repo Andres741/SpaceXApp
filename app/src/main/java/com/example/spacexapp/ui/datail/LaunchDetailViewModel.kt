@@ -26,11 +26,6 @@ class LaunchDetailViewModel @Inject constructor(
 
     val loadingStatus: StateFlow<LoadDetailStatus> = _loadingStatus
 
-    private val loadingCallbacks = LoadingCallbacks<LaunchQuery.Data>(
-        onLoading = { _loadingStatus.value = LoadDetailStatus.Loading },
-        onError = { _loadingStatus.value = LoadDetailStatus.Error },
-    )
-
     lateinit var launch: LaunchQuery.Launch
         private set
 
@@ -40,7 +35,11 @@ class LaunchDetailViewModel @Inject constructor(
 
     fun loadData(launchId: String) {
         viewModelScope.launch(Dispatchers.Default) {
-            launch = load(connexionFlow, loadingCallbacks) {
+            launch = load(
+                connexionFlow,
+                onLoading = { _loadingStatus.value = LoadDetailStatus.Loading },
+                onError = { _loadingStatus.value = LoadDetailStatus.Error }
+            ) {
                 launchRepository.getLaunch(launchId)
             }.launch!!
 
