@@ -10,11 +10,15 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
 
         <item name="cardBackgroundColor">@color/very_dark_gray</item>
         <item name="nestedCardColor">@color/dark_gray</item>
+
+        <item name="normalTextColor">@color/clear_gray</item>
+        <item name="android:textColor">?attr/normalTextColor</item>
+
 
     </style>
 </resources>

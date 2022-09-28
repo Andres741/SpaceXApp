@@ -112,7 +112,8 @@
 
                 android:text="@string/article"
                 app:layout_constraintStart_toEndOf="@+id/links"
-                app:layout_constraintTop_toTopOf="@+id/links" />
+                app:layout_constraintTop_toTopOf="@+id/links"
+                />
 
             <TextView
                 android:id="@+id/video_link"

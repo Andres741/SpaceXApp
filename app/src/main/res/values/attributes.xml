@@ -2,5 +2,6 @@
 <resources>
 
     <attr format="color" name="nestedCardColor"/>
+    <attr format="color" name="normalTextColor"/>
 
 </resources>

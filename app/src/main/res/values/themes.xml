@@ -16,6 +16,10 @@
         <item name="cardBackgroundColor">@color/very_clear_gray</item>
         <item name="nestedCardColor">@color/clear_gray</item>
 
+        <item name="normalTextColor">@color/dark_gray</item>
+        <item name="android:textColor">?attr/normalTextColor</item>
+
+
     </style>
 
     <style name="Theme.SpaceXApp.NoActionBar">

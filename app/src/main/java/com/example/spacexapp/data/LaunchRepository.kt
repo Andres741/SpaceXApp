@@ -28,7 +28,7 @@ class LaunchRepository @Inject constructor(
                 limit = Optional.present(limit),
                 offset = Optional.present(offset),
                 sort = Optional.present("launch_date_utc"),
-                order = Optional.present("desc")
+                order = Optional.present("desc"),
             )
         ).execute().dataAssertNoErrors
     }

@@ -56,8 +56,8 @@ class ImageFragment: Fragment() {
 
                 @StringRes
                 val msj: Int = kotlin.run {
-                    val image =
-                        (viewModel.loadImageStatusFlow.value as? LoadImageStatus.Loaded)?.drawable ?: return@run R.string.image_not_available
+                    val image = (viewModel.loadImageStatusFlow.value as? LoadImageStatus.Loaded)?.drawable
+                        ?: return@run R.string.image_not_available
 
                     val isImageSaved = saveImageToStorage(context = context!!, bitmap = image.toBitmap())
 
