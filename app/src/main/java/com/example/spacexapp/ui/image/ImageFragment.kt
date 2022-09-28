@@ -14,7 +14,9 @@ import com.example.spacexapp.databinding.FragmentImageBinding
 import com.example.spacexapp.util.*
 import com.example.spacexapp.util.extensions.collectOnUI
 import com.example.spacexapp.util.extensions.saveImageToStorage
+import com.example.spacexapp.util.extensions.viewCoroutineScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -53,18 +55,14 @@ class ImageFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.save_image -> {
-
-                @StringRes
-                val msj: Int = kotlin.run {
-                    val image = (viewModel.loadImageStatusFlow.value as? LoadImageStatus.Loaded)?.drawable
-                        ?: return@run R.string.image_not_available
-
-                    val isImageSaved = saveImageToStorage(context = context!!, bitmap = image.toBitmap())
-
-                    return@run if (isImageSaved) R.string.image_saved else R.string.save_image_error
+                viewCoroutineScope.launch {
+                    @StringRes
+                    val msj: Int = kotlin.run {
+                        if (viewModel.loadImageStatusFlow.value !is LoadImageStatus.Loaded) return@run R.string.image_not_available
+                        return@run if (viewModel.saveImage()) R.string.image_saved else R.string.save_image_error
+                    }
+                    Toast.makeText(context, msj, Toast.LENGTH_SHORT).show()
                 }
-
-                Toast.makeText(context, msj, Toast.LENGTH_SHORT).show()
             }
             else -> return super.onOptionsItemSelected(item)
         }

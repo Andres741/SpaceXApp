@@ -1,17 +1,16 @@
 package com.example.spacexapp.ui.image
 
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spacexapp.data.ImageDownloader
 import com.example.spacexapp.util.*
 import com.example.spacexapp.util.extensions.ifTrue
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import okio.IOException
 import javax.inject.Inject
 
@@ -40,6 +39,12 @@ class ImageViewModel @Inject constructor(
             _loadImageStatusFlow.value = LoadImageStatus.Loaded(drawable)
         }
     }
+
+    suspend fun saveImage(): Boolean = withContext(Dispatchers.Default) {
+        val image = (loadImageStatusFlow.value as? LoadImageStatus.Loaded)?.drawable ?: return@withContext false
+        imageDownloader.saveImageToStorage(image.toBitmap())
+    }
+
 
     private val logger = Logger("ImageViewModel")
     private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
