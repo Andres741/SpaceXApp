@@ -37,12 +37,15 @@ class ImageViewHolder private constructor(
             root.visibility = View.VISIBLE
 
             image.load(imageUrl.log()) {
-                listener(onSuccess = { _, _ ->
-                    progressBar.visibility = View.GONE
-                }, onError = { _, _ ->
-                    "Load error".log()
-                    root.visibility = View.GONE
-                })
+                listener(
+                    onSuccess = { _, _ ->
+                        progressBar.visibility = View.GONE
+                    },
+                    onError = { _, _ ->
+                        "Load error".log()
+                        root.visibility = View.GONE
+                    }
+                )
             }
         }
 

@@ -61,7 +61,7 @@ fun View.putWebLinkOrGone(URL: String?) {
 }
 
 inline val Fragment.viewLifecycle get() = viewLifecycleOwner.lifecycle
-inline val Fragment.viewCoroutineScope get() = viewLifecycle.coroutineScope
+inline val Fragment.viewCoroutineScope get() = viewLifecycleOwner.lifecycle.coroutineScope
 
 
 inline var<T, VH : RecyclerView.ViewHolder> ListAdapter<T, VH>.list: List<T>

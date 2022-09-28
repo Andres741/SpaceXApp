@@ -1,15 +1,15 @@
 package com.example.spacexapp.ui.recycle.viewHolder
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.R
 import com.example.spacexapp.data.timeFormatted
 import com.example.spacexapp.databinding.LaunchItemBinding
 import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
-import com.example.spacexapp.util.extensions.makeNullIfEmpty
+import com.example.spacexapp.util.extensions.makeNotNull
 import com.example.spacexapp.util.extensions.setTextOption
 import com.example.spacexapp.util.extensions.setTextOrGone
 
@@ -19,6 +19,17 @@ class LaunchViewHolder private constructor(
 ): RecyclerView.ViewHolder(binding.root) {
 
     private var launch: LaunchesQuery.Launch? = null
+
+    private var imagesURLs
+        get() = imagesAdapter.list
+        set(value) {
+            imagesAdapter.list = value
+//            value.isNotEmpty().also(binding.images::isVisible.setter).also(binding.imagesRv::isVisible.setter)
+            val existsImages = value.isNotEmpty()
+            binding.images.isVisible = existsImages
+            binding.imagesRv.isVisible = existsImages
+        }
+
 
     companion object {
         fun create(parent: ViewGroup, onClickImage: OnClickImageViewHolder, onClickLaunch: OnClickLaunch): LaunchViewHolder {
@@ -36,7 +47,7 @@ class LaunchViewHolder private constructor(
                 binding.root.setOnClickListener {
                     launch?.run(onClickLaunch)
                 }
-                binding.shipsRv.adapter = adapter
+                binding.imagesRv.adapter = adapter
             }
         }
     }
@@ -50,20 +61,12 @@ class LaunchViewHolder private constructor(
             details.setTextOrGone(launch.details)
             launchSuccess.setTextOption(launch.launch_success, R.string.successful, R.string.failed)
 
-            launch.links?.flickr_images.makeNullIfEmpty()?.also { imageURLs ->
-                images.visibility = View.VISIBLE
-                shipsRv.visibility = View.VISIBLE
-                imagesAdapter.list = imageURLs
-            } ?: kotlin.run {
-                images.visibility = View.GONE
-                shipsRv.visibility = View.GONE
-                imagesAdapter.list = emptyList()
-            }
+            imagesURLs = launch.links?.flickr_images.makeNotNull()
         }
     }
 
     fun recycle() {
-        imagesAdapter.list = emptyList()
+        imagesURLs = emptyList()
     }
 }
 
