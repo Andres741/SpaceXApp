@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable
 import com.example.spacexapp.data.ImageDownloader
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -50,16 +52,27 @@ class DownloadingImagesCache (
                 flow.value = CacheLoadImageStatus.Loaded(drawable)
             }
         }
-        cache[imageURL] = cacheValue
-        fixCacheSize(imageURL)
+        addToCache(imageURL, cacheValue)
         return cacheValue
     }
 
-    private fun fixCacheSize(imageURL: String) {
+    private fun addToCache(imageURL: String, cacheValue: CacheValue) {
+        cache[imageURL] = cacheValue
         queue.add(imageURL)
-        if (cache.size > maxCacheSize) {
-            val removed = queue.poll() ?: return
-            removeFromCache(removed)
+        fixCacheSize()
+    }
+
+    private val fixCacheSizeMutex = Mutex()
+    private fun fixCacheSize() {
+        if (fixCacheSizeMutex.isLocked) return
+
+        coroutineScope.launch {
+            fixCacheSizeMutex.withLock {
+                while (cache.size > maxCacheSize) {
+                    val removed = queue.poll() ?: continue
+                    removeFromCache(removed)
+                }
+            }
         }
     }
 
