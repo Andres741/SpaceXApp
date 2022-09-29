@@ -2,18 +2,20 @@ package com.example.spacexapp.ui.recycle.viewHolder
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.size.Dimension
+import coil.size.Size
+import com.bumptech.glide.Glide
 import com.example.spacexapp.databinding.ImageItemBinding
 import com.example.spacexapp.util.CacheLoadImageStatus
 import com.example.spacexapp.util.DownloadingImagesCache
 import com.example.spacexapp.util.OneScopeAtOnceProvider
 import com.example.spacexapp.util.getDrawableOrNull
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,6 +46,11 @@ class ImageViewHolder private constructor(
     private val scopeFactory = OneScopeAtOnceProvider()
     private inline val coroutineScope get() = scopeFactory.currentScope
 
+    private val size = Size (
+        height = Dimension(580),
+        width = Dimension.Undefined
+    )
+
     var imageUrl: String? = null
         private set
 
@@ -58,7 +65,7 @@ class ImageViewHolder private constructor(
 
             coroutineScope?.launch {
                 val imageFlow = withContext(Dispatchers.Default) {
-                    downloadingImagesCache.getImageFlow(imageUrl)
+                    downloadingImagesCache.getImageFlow(imageUrl, size)
                 }
 
                 imageFlow.collectLatest { loadStatus ->

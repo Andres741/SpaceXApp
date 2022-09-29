@@ -1,6 +1,7 @@
 package com.example.spacexapp.util
 
 import android.graphics.drawable.Drawable
+import coil.size.Size
 import com.example.spacexapp.data.ImageDownloader
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -32,14 +33,14 @@ class DownloadingImagesCache (
         coroutineScope, SharingStarted.WhileSubscribed(), NetworkStatus.Available
     )
 
-    fun getImageFlow(imageURL: String): StateFlow<CacheLoadImageStatus> {
+    fun getImageFlow(imageURL: String, imageSize: Size? = null): StateFlow<CacheLoadImageStatus> {
         val drawableFromCache = cache[imageURL]
         if (drawableFromCache != null) return drawableFromCache.flow
 
-        return createNewCacheValue(imageURL).flow
+        return createNewCacheValue(imageURL, imageSize).flow
     }
 
-    private fun createNewCacheValue(imageURL: String): CacheValue {
+    private fun createNewCacheValue(imageURL: String, imageSize: Size? = null): CacheValue {
         val cacheValue = cacheValuePool.getValue { flow ->
             coroutineScope.launch {
                 val drawable = load(
@@ -47,7 +48,7 @@ class DownloadingImagesCache (
                     onLoading = { flow.value = CacheLoadImageStatus.Loading },
                     onError = { flow.value = CacheLoadImageStatus.Error(it) }
                 ) {
-                    imageDownloader.getImage(imageURL).mapCatching { it ?: throw IOException("Load image failed") }
+                    imageDownloader.getImage(imageURL, imageSize).mapCatching { it ?: throw IOException("Load image failed") }
                 }
                 flow.value = CacheLoadImageStatus.Loaded(drawable)
             }

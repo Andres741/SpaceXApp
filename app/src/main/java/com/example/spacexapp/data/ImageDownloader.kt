@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
+import coil.size.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
@@ -20,12 +21,15 @@ class ImageDownloader(private val context: Context) {
 
     private val imageLoader = context.imageLoader
 
-    suspend fun getImage(imageURL: String) = kotlin.runCatching {
-        val request = ImageRequest.Builder(context)
-            .data(imageURL)
-            .build()
+    suspend fun getImage(imageURL: String, imageSize: Size? = null) = kotlin.runCatching {
+        val builder = ImageRequest.Builder(context).apply {
+            data(imageURL)
+            imageSize?.also {
+                size(it)
+            }
+        }
 
-        imageLoader.execute(request).drawable
+        imageLoader.execute(builder.build()).drawable
     }
 
     suspend fun saveImageToStorage(bitmap: Bitmap, imageName: String? = null): Boolean = withContext(Dispatchers.IO + NonCancellable) {

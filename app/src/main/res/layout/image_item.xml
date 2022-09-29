@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_height="220dp"
-    android:layout_width="150dp"
+    android:layout_width="wrap_content"
 
     android:clickable="true"
     android:elevation="16dp"
@@ -16,6 +16,8 @@
     app:contentPadding="4dp"
 
     app:cardBackgroundColor="?attr/nestedCardColor"
+
+    tools:layout_height="220dp"
     >
 
     <ImageView
