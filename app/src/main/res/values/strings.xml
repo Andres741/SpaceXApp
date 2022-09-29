@@ -41,5 +41,6 @@
     <string name="image_not_available">The image is not available yet</string>
     <string name="image_saved">Image saved</string>
     <string name="save_image_error">Error saving image</string>
+    <string name="downloading">Downloading</string>
 
 </resources>

@@ -4,56 +4,98 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.spacexapp.databinding.ImageItemBinding
+import com.example.spacexapp.util.CacheLoadImageStatus
+import com.example.spacexapp.util.DownloadingImagesCache
+import com.example.spacexapp.util.OneScopeAtOnceProvider
+import com.example.spacexapp.util.getDrawableOrNull
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class ImageViewHolder private constructor(
     private val binding: ImageItemBinding,
+    private val downloadingImagesCache: DownloadingImagesCache,
 ): RecyclerView.ViewHolder(binding.root) {
     companion object {
-        fun create(parent: ViewGroup, onClickImageViewHolder: OnClickImageViewHolder) = ImageViewHolder(
+        fun create(
+            parent: ViewGroup,
+            imageViewHolderArgs: ImageViewHolderArgs,
+        ) = ImageViewHolder(
             ImageItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,
             ),
+            imageViewHolderArgs.downloadingImagesCache,
         ).apply {
             binding.root.setOnClickListener {
-                imageUrl?.also(onClickImageViewHolder)
+                imageUrl?.also(imageViewHolderArgs.onClickImageViewHolder)
             }
         }
     }
+
+    private val scopeFactory = OneScopeAtOnceProvider()
+    private inline val coroutineScope get() = scopeFactory.currentScope
 
     var imageUrl: String? = null
         private set
 
     fun bind(imageUrl: String) {
         this.imageUrl = imageUrl
+        scopeFactory.newScope
 
         binding.apply {
-            progressBar.visibility = View.VISIBLE
-            root.visibility = View.VISIBLE
+            progressBar.isVisible = true
+            error.isVisible = false
+            image.isVisible = false
 
-            image.load(imageUrl.log()) {
-                listener(
-                    onSuccess = { _, _ ->
-                        progressBar.visibility = View.GONE
-                    },
-                    onError = { _, _ ->
-                        "Load error".log()
-                        root.visibility = View.GONE
+            coroutineScope?.launch {
+                val imageFlow = withContext(Dispatchers.Default) {
+                    downloadingImagesCache.getImageFlow(imageUrl)
+                }
+
+                imageFlow.collectLatest { loadStatus ->
+                    progressBar.isVisible = loadStatus is CacheLoadImageStatus.Loading
+                    error.isVisible = loadStatus is CacheLoadImageStatus.Error
+
+                    loadStatus.getDrawableOrNull()?.also { drawable ->
+                        image.isVisible = true
+                        image.load(drawable)
                     }
-                )
+                }
             }
         }
 
+//        binding.apply {
+//            progressBar.isVisible = true
+//            error.isVisible = false
+//
+//            image.load(imageUrl.log()) {
+//                listener(
+//                    onSuccess = { _, _ ->
+//                        progressBar.isVisible = false
+//                        error.isVisible = false
+//                    },
+//                    onError = { _, _ ->
+//                        "Load error".log()
+//                        progressBar.isVisible = true
+//                        error.isVisible = true
+//                    }
+//                )
+//            }
+//        }
 //        Glide.with(binding.image).load(imageUrl).into(binding.image) // Has a bug in shaping
     }
 
     fun recycle() {
-        //loadJob?.cancel()
+        scopeFactory.cancel()
     }
 
     private fun<T> T.log(msj: Any? = null) = apply {
@@ -62,6 +104,8 @@ class ImageViewHolder private constructor(
 }
 
 typealias OnClickImageViewHolder = (String) -> Unit
-data class ViewHolderCallBacks (
-    val onClickImageViewHolder: OnClickImageViewHolder
+
+data class ImageViewHolderArgs (
+    val downloadingImagesCache: DownloadingImagesCache,
+    val onClickImageViewHolder: OnClickImageViewHolder,
 )

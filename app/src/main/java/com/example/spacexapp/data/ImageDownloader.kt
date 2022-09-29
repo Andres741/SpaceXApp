@@ -57,7 +57,9 @@ class ImageDownloader(private val context: Context) {
     }
 
     suspend fun downloadFromURL(imageURL: String, imageName: String? = null): Boolean =
-        getImage(imageURL).mapCatching { saveImageToStorage(it!!.toBitmap(), imageName) }.getOrNull() ?: false
+        getImage(imageURL).getOrNull()?.let {
+            saveImageToStorage(it.toBitmap(), imageName)
+        } ?: false
 
     companion object {
         const val defaultImageName = "spacex_image.jpg"

@@ -66,11 +66,13 @@ fun getNetworkStatusFlow(context: Context): Flow<NetworkStatus> = callbackFlow {
         .build()
 
     connectivityManager.registerNetworkCallback(networkRequest, connectivityManagerCallback)
+    "new subscription".log()
 //    connectivityManager.requestNetwork(networkRequest, connectivityManagerCallback, 100)
 
     awaitClose{
         noNetJob?.cancel()
         connectivityManager.unregisterNetworkCallback(connectivityManagerCallback)
+        "subscription removed".log()
     }
 
 }.distinctUntilChanged()
@@ -79,5 +81,5 @@ class NetworkStatusFlowFactory(private val context: Context) {
     val new get() = getNetworkStatusFlow(context)
 }
 
-private val logger = Logger("MainViewModel")
+private val logger = Logger("Internet")
 private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)

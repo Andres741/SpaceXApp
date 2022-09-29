@@ -18,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LaunchDetailViewModel @Inject constructor(
     networkStatusFlowFactory: NetworkStatusFlowFactory,
-    private val launchRepository: LaunchRepository
+    private val launchRepository: LaunchRepository,
+    val downloadingImagesCache: DownloadingImagesCache,
 ) : ViewModel() {
 
     private val connexionFlow = networkStatusFlowFactory.new

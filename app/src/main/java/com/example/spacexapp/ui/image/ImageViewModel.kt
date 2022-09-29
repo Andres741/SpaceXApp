@@ -1,13 +1,11 @@
 package com.example.spacexapp.ui.image
 
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spacexapp.data.ImageDownloader
 import com.example.spacexapp.util.*
-import com.example.spacexapp.util.extensions.ifTrue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -19,6 +17,7 @@ import javax.inject.Inject
 class ImageViewModel @Inject constructor(
     networkStatusFlowFactory: NetworkStatusFlowFactory,
     private val imageDownloader: ImageDownloader,
+    downloadingImagesCache: DownloadingImagesCache,
 ): ViewModel() {
 
     private val connexionFlow = networkStatusFlowFactory.new

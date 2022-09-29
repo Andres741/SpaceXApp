@@ -14,6 +14,7 @@ import com.example.spacexapp.data.timeFormatted
 import com.example.spacexapp.databinding.FragmentDetailBinding
 import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
 import com.example.spacexapp.ui.recycle.adapter.ShipsAdapter
+import com.example.spacexapp.ui.recycle.viewHolder.ImageViewHolderArgs
 import com.example.spacexapp.util.Logger
 import com.example.spacexapp.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,7 +61,8 @@ class LaunchDetailFragment : Fragment() {
             }
 
             launch.links?.flickr_images.makeNullIfEmpty()?.also { imageURLs ->
-                images.adapter = ImagesAdapter(::navigateToImage).apply {
+                val imageViewHolderArgs = ImageViewHolderArgs(viewModel.downloadingImagesCache, ::navigateToImage)
+                images.adapter = ImagesAdapter(imageViewHolderArgs).apply {
                     list = imageURLs
                 }
             }

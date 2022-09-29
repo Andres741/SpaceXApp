@@ -32,9 +32,9 @@ class LaunchViewHolder private constructor(
 
 
     companion object {
-        fun create(parent: ViewGroup, onClickImage: OnClickImageViewHolder, onClickLaunch: OnClickLaunch): LaunchViewHolder {
+        fun create(parent: ViewGroup, imageViewHolderArgs: ImageViewHolderArgs, onClickLaunch: OnClickLaunch): LaunchViewHolder {
 
-            val adapter = ImagesAdapter(onClickImage)
+            val adapter = ImagesAdapter(imageViewHolderArgs)
 
             return LaunchViewHolder(
                 LaunchItemBinding.inflate(

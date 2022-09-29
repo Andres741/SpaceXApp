@@ -3,14 +3,10 @@ package com.example.spacexapp.util
 import android.graphics.drawable.Drawable
 import com.example.spacexapp.data.ImageDownloader
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import java.io.IOException
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -18,74 +14,121 @@ import kotlin.coroutines.CoroutineContext
  * connexion is restored.
  */
 class DownloadingImagesCache (
-    private val connexionFlow: Flow<NetworkStatus>,
+    connexionFlow: Flow<NetworkStatus>,
     private val imageDownloader: ImageDownloader,
     parent: Job? = null,
-    val maxCacheSize: Int = 64,
+    val maxCacheSize: Int = 32,
 ) {
+    private val cacheValuePool = CacheValuePool()
+
     private val cache = ConcurrentHashMap<String, CacheValue>(maxCacheSize)
-    private val queue: Queue<String>? = if (maxCacheSize == Int.MAX_VALUE) null else ConcurrentLinkedQueue()
+    private val queue = ConcurrentLinkedQueue<String>()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob(parent))
+
+    private val connexionStateFlow = connexionFlow.stateIn(
+        coroutineScope, SharingStarted.WhileSubscribed(), NetworkStatus.Available
+    )
 
     fun getImageFlow(imageURL: String): StateFlow<CacheLoadImageStatus> {
         val drawableFromCache = cache[imageURL]
         if (drawableFromCache != null) return drawableFromCache.flow
 
-        fixCacheSize(imageURL)
-
-        return createNewDrawableFlow(imageURL).also { newValue ->
-            cache[imageURL] = newValue
-        }.flow
+        return createNewCacheValue(imageURL).flow
     }
 
-    private fun createNewDrawableFlow(imageURL: String): CacheValue {
-        val newDrawableFlow =  MutableStateFlow(CacheLoadImageStatus.Loading as CacheLoadImageStatus)
-
-        val job = coroutineScope.launch {
-            val drawable = load(
-                connexionFlow,
-                onLoading = { newDrawableFlow.value = CacheLoadImageStatus.Loading },
-                onError = { newDrawableFlow.value = CacheLoadImageStatus.Error(it) }
-            ) {
-                imageDownloader.getImage(imageURL).mapCatching { it ?: throw IOException("Load image failed") }
+    private fun createNewCacheValue(imageURL: String): CacheValue {
+        val cacheValue = cacheValuePool.getValue { flow ->
+            coroutineScope.launch {
+                val drawable = load(
+                    connexionStateFlow,
+                    onLoading = { flow.value = CacheLoadImageStatus.Loading },
+                    onError = { flow.value = CacheLoadImageStatus.Error(it) }
+                ) {
+                    imageDownloader.getImage(imageURL).mapCatching { it ?: throw IOException("Load image failed") }
+                }
+                flow.value = CacheLoadImageStatus.Loaded(drawable)
             }
-            newDrawableFlow.value = CacheLoadImageStatus.Loaded(drawable)
         }
-
-        return CacheValue(job, newDrawableFlow)
+        cache[imageURL] = cacheValue
+        fixCacheSize(imageURL)
+        return cacheValue
     }
 
     private fun fixCacheSize(imageURL: String) {
-        queue?.apply {
-            add(imageURL)
-            if (size > maxCacheSize) {
-                cache.remove(imageURL)?.also { removed ->
-                    removed.job.cancel()
-                }
-                poll()
-            }
+        queue.add(imageURL)
+        if (cache.size > maxCacheSize) {
+            val removed = queue.poll() ?: return
+            removeFromCache(removed)
         }
+    }
+
+    fun remove(imageURL: String): Boolean {
+        removeFromCache(imageURL)
+        return queue.remove(imageURL)
+    }
+
+    fun removeIfDownloading(imageURL: String): Boolean {
+        val cacheValue = cache[imageURL] ?: return false
+        if (cacheValue.flow.value is CacheLoadImageStatus.Loaded) return false
+
+        removeFromCache(imageURL)
+        return queue.remove(imageURL)
     }
 
     fun clear() {
-        cache.forEach { (_, value) ->
-            value.job.cancel()
-        }
+        cache.keys().toList().forEach(::removeFromCache)
         cache.clear()
-        queue?.clear()
+        queue.clear()
+    }
+
+    private fun removeFromCache(imageURL: String) {
+        val removed = cache.remove(imageURL) ?: return
+        cacheValuePool.putValue(removed)
     }
 }
 
-sealed class CacheLoadImageStatus: LoadStatus {
-    data class Loaded(val drawable: Drawable): CacheLoadImageStatus(), LoadStatus.Loaded
-    data class Error(val exception: Throwable): CacheLoadImageStatus(), LoadStatus.Error
-    object Loading: CacheLoadImageStatus(), LoadStatus.Loading
+sealed interface CacheLoadImageStatus: LoadStatus {
+    @JvmInline
+    value class Loaded(val drawable: Drawable): CacheLoadImageStatus, LoadStatus.Loaded
+    @JvmInline
+    value class Error(val exception: Throwable): CacheLoadImageStatus, LoadStatus.Error
+    object Loading: CacheLoadImageStatus, LoadStatus.Loading
 }
 
 fun CacheLoadImageStatus.getDrawableOrNull() = (this as? CacheLoadImageStatus.Loaded)?.drawable
+fun CacheLoadImageStatus.getErrorOrNull() = (this as? CacheLoadImageStatus.Error)?.exception
 
 data class CacheValue (
-    val job: Job,
-    val flow: MutableStateFlow<CacheLoadImageStatus>,
-)
+    var job: Job,
+    val flow: MutableStateFlow<CacheLoadImageStatus> = MutableStateFlow(CacheLoadImageStatus.Loading),
+) {
+    companion object {
+        inline fun build(newJobProvider: (MutableStateFlow<CacheLoadImageStatus>) -> Job): CacheValue {
+            val flow = MutableStateFlow(CacheLoadImageStatus.Loading as CacheLoadImageStatus)
+            val job = newJobProvider(flow)
+            return CacheValue(job, flow)
+        }
+    }
+}
+
+class CacheValuePool {
+    private val queue = ConcurrentLinkedQueue<CacheValue>() // A stack is faster, but there are not a concurrent stack
+
+    private fun generateNewValue(job: Job) = CacheValue(job)
+
+    fun getValue(job: Job): CacheValue = queue.poll()?.also { it.job = job } ?: generateNewValue(job)
+
+    fun getValue(newJobProvider: (MutableStateFlow<CacheLoadImageStatus>) -> Job): CacheValue {
+        val value = queue.poll() ?: return CacheValue.build(newJobProvider)
+        value.job = newJobProvider(value.flow)
+        return value
+    }
+
+
+    fun putValue(cacheValue: CacheValue) {
+        cacheValue.job.cancel()
+        cacheValue.flow.value = CacheLoadImageStatus.Loading
+        queue.add(cacheValue)
+    }
+}

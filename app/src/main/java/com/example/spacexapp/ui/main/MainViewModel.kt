@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.spacexapp.data.LaunchRepository
-import com.example.spacexapp.util.LoadStatus
-import com.example.spacexapp.util.Logger
-import com.example.spacexapp.util.NetworkStatusFlowFactory
-import com.example.spacexapp.util.isPossibleTryLoadFlow
+import com.example.spacexapp.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +15,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     networkStatusFlowFactory: NetworkStatusFlowFactory,
     launchRepository: LaunchRepository,
+    val downloadingImagesCache: DownloadingImagesCache,
 ) : ViewModel() {
 
     val launchesDataFlow = launchRepository.getLaunchesDataFlow().cachedIn(viewModelScope)

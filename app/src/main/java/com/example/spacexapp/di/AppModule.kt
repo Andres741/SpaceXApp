@@ -3,8 +3,8 @@ package com.example.spacexapp.di
 import android.content.Context
 import com.example.spacexapp.data.ImageDownloader
 import com.example.spacexapp.data.buildApollo
+import com.example.spacexapp.util.DownloadingImagesCache
 import com.example.spacexapp.util.NetworkStatusFlowFactory
-import com.example.spacexapp.util.getNetworkStatusFlow
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,4 +27,12 @@ object AppModule {
     @Singleton
     @Provides
     fun provideImageDownloader(@ApplicationContext context: Context) = ImageDownloader(context)
+
+    @Singleton
+    @Provides
+    fun provideDownloadingImagesCache(
+        networkStatusFlowFactory:  NetworkStatusFlowFactory, imageDownloader: ImageDownloader,
+    ) = DownloadingImagesCache(
+        networkStatusFlowFactory.new, imageDownloader,
+    )
 }

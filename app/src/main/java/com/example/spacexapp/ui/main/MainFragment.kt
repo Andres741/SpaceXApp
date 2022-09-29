@@ -14,6 +14,7 @@ import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
 import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
 import com.example.spacexapp.ui.recycle.adapter.LocationLoadingStateAdapter
+import com.example.spacexapp.ui.recycle.viewHolder.ImageViewHolderArgs
 import com.example.spacexapp.util.*
 import com.example.spacexapp.util.extensions.collectOnUI
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +28,9 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    private val launchesAdapter by lazy { LaunchesAdapter(::navigateToImage, ::navigateLaunchDetail) }
+    private val launchesAdapter by lazy { LaunchesAdapter(
+        ImageViewHolderArgs(viewModel.downloadingImagesCache, ::navigateToImage), ::navigateLaunchDetail
+    ) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
