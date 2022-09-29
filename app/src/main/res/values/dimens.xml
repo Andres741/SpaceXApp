@@ -1,4 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="link_marg">28dp</dimen>
+    <dimen name="image_item_heigth">220dp</dimen>
 </resources>
