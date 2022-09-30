@@ -70,7 +70,7 @@ class DownloadingImagesCache (
         coroutineScope.launch {
             fixCacheSizeMutex.withLock {
                 while (cache.size > maxCacheSize) {
-                    val removed = queue.poll() ?: continue
+                    val removed = queue.poll() ?: break
                     removeFromCache(removed)
                 }
             }
@@ -113,7 +113,7 @@ sealed interface CacheLoadImageStatus: LoadStatus {
 fun CacheLoadImageStatus.getDrawableOrNull() = (this as? CacheLoadImageStatus.Loaded)?.drawable
 fun CacheLoadImageStatus.getErrorOrNull() = (this as? CacheLoadImageStatus.Error)?.exception
 
-data class CacheValue (
+private data class CacheValue (
     var job: Job,
     val flow: MutableStateFlow<CacheLoadImageStatus> = MutableStateFlow(CacheLoadImageStatus.Loading),
 ) {
@@ -126,7 +126,7 @@ data class CacheValue (
     }
 }
 
-class CacheValuePool {
+private class CacheValuePool {
     private val queue = ConcurrentLinkedQueue<CacheValue>() // A stack is faster, but there are not a concurrent stack
 
     private fun generateNewValue(job: Job) = CacheValue(job)
