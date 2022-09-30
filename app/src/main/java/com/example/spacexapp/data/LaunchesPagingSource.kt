@@ -10,6 +10,14 @@ class LaunchesPagingSource (
     private val launchPageProvider: LaunchPageProvider
 ): PagingSource<Int, LaunchesQuery.Launch>() {
 
+    private val repeatedSet = HashSet<String>()
+
+    private fun launchIsRepeated(launch: LaunchesQuery.Launch) = repeatedSet.add(launch.id ?: "")
+
+    // filter the launch "SXM-7" because has a grown id
+    private fun prepareData(launchesPage: List<LaunchesQuery.Launch?>?) =
+        launchesPage?.asSequence().makeNotNull().filter { it.mission_name != "SXM-7" }.filter(::launchIsRepeated).toList()
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LaunchesQuery.Launch> {
         val offset = params.key ?: INITIAL_INDEX
         val loadSize = params.loadSize
@@ -19,7 +27,7 @@ class LaunchesPagingSource (
             val launchesPage = response.launches
 
             LoadResult.Page(
-                data = launchesPage.makeNotNull(),
+                data = prepareData(launchesPage),
                 prevKey = (offset - loadSize).takeIf { it > INITIAL_INDEX },
                 nextKey = if ((launchesPage?.size ?: -1) < loadSize) null else offset + loadSize
             )

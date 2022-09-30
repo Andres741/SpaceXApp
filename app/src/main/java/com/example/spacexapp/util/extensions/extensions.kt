@@ -21,9 +21,15 @@ import kotlin.system.measureTimeMillis
 private val formatter = SimpleDateFormat("EEE, dd/MM/yyyy") // EEE, dd/MM/yyyy - HH:mm:ss
 fun Long.formatDate(): String = formatter.format(this)
 
-fun<T: Any> List<T?>?.makeNotNull(): List<T> = this?.filterNotNull() ?: emptyList()
+fun<T: Any> Iterable<T?>?.makeNotNull(): List<T> = this?.filterNotNull() ?: emptyList()
 
-fun<T: Any> List<T?>?.makeNullIfEmpty(): List<T>? = this?.filterNotNull()?.takeIf(List<*>::isNotEmpty)
+fun<T: Any> Iterable<T?>?.makeNullIfEmpty(): List<T>? = this?.filterNotNull()?.takeIf(List<*>::isNotEmpty)
+
+fun<T: Any> Sequence<T?>?.makeNotNull(): Sequence<T> = this?.filterNotNull() ?: emptySequence()
+
+fun<T: Any> Sequence<T?>?.makeNullIfEmpty(): Sequence<T>? = this?.filterNotNull()?.takeIf {
+    it.iterator().hasNext()
+}
 
 inline fun <B: Boolean?> B.ifTrue(block: () -> Unit) = apply {
     if (this == true) block()

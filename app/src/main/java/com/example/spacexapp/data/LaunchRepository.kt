@@ -1,8 +1,6 @@
 package com.example.spacexapp.data
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.paging.*
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
 import com.example.spacexapp.LaunchQuery
