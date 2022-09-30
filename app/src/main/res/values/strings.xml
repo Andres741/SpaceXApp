@@ -42,5 +42,6 @@
     <string name="image_saved">Image saved</string>
     <string name="save_image_error">Error saving image</string>
     <string name="downloading">Downloading</string>
+    <string name="ship_arriving">Ship arriving</string>
 
 </resources>

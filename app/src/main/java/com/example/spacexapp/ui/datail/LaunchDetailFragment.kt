@@ -15,9 +15,13 @@ import com.example.spacexapp.databinding.FragmentDetailBinding
 import com.example.spacexapp.ui.recycle.adapter.ImagesAdapter
 import com.example.spacexapp.ui.recycle.adapter.ShipsAdapter
 import com.example.spacexapp.ui.recycle.viewHolder.ImageViewHolderArgs
+import com.example.spacexapp.ui.recycle.viewHolder.ShipViewHolderArgs
 import com.example.spacexapp.util.Logger
 import com.example.spacexapp.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -44,6 +48,12 @@ class LaunchDetailFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        CoroutineScope(Dispatchers.Default).launch {
+            viewModel.launch.ships?.forEach { ship ->
+                val imageURL = ship?.image ?: return@forEach
+                viewModel.downloadingImagesCache.remove(imageURL)
+            }
+        }
         _binding = null
     }
 
@@ -80,13 +90,15 @@ class LaunchDetailFragment : Fragment() {
             }
 
             launch.ships.makeNullIfEmpty()?.also { ships ->
-                shipsRv.adapter = ShipsAdapter {
+                val shipViewHolderArgs = ShipViewHolderArgs(viewModel.downloadingImagesCache) {
                     if (it.image == null) {
                         Toast.makeText(context, R.string.ship_no_image, Toast.LENGTH_SHORT).show()
-                        return@ShipsAdapter
+                        return@ShipViewHolderArgs
                     }
                     navigateToImage(it.image)
-                }.apply {
+                }
+
+                shipsRv.adapter = ShipsAdapter(shipViewHolderArgs).apply {
                     list = ships
                 }
             } ?: kotlin.run {

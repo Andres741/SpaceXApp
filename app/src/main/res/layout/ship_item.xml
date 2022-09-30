@@ -25,14 +25,45 @@
         android:orientation="vertical"
         >
 
-        <ImageView
-            android:id="@+id/ship_image"
+        <FrameLayout
+            android:id="@+id/ship_image_frame"
             android:layout_width="wrap_content"
             android:layout_height="220dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_width="128dp" />
+            tools:layout_width="128dp"
+
+            >
+            <ImageView
+                android:id="@+id/ship_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                />
+
+            <ImageView
+                android:id="@+id/error"
+
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+
+                android:layout_gravity="center"
+                android:src="@drawable/no_internet"
+                android:contentDescription="@string/no_internet"
+                />
+
+            <TextView
+                android:id="@+id/loading_text"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="26sp"
+                android:text="@string/ship_arriving"
+                />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/ship_name"
@@ -42,11 +73,11 @@
             app:layout_constraintWidth_min="60dp"
 
             android:layout_marginTop="12dp"
-            app:layout_constraintEnd_toEndOf="@+id/ship_image"
+            app:layout_constraintEnd_toEndOf="@+id/ship_image_frame"
 
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ship_image"
+            app:layout_constraintTop_toBottomOf="@+id/ship_image_frame"
 
             tools:text="American Islander. testing long name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
