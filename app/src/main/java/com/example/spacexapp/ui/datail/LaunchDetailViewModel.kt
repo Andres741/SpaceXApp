@@ -5,13 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.data.LaunchRepository
 import com.example.spacexapp.util.*
-import com.example.spacexapp.util.extensions.ifFalse
-import com.example.spacexapp.util.extensions.ifTrue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -34,15 +31,15 @@ class LaunchDetailViewModel @Inject constructor(
         _loadingStatus.value = LoadDetailStatus.Loading
     }
 
-    fun loadData(launchId: String) {
+    fun loadData(missionName: String) {
         viewModelScope.launch(Dispatchers.Default) {
             launch = load(
                 connexionFlow,
                 onLoading = { _loadingStatus.value = LoadDetailStatus.Loading },
                 onError = { _loadingStatus.value = LoadDetailStatus.Error }
             ) {
-                launchRepository.getLaunch(launchId)
-            }.launch!!
+                launchRepository.getLaunch(missionName).mapCatching { it!! }
+            }
 
             _loadingStatus.value = LoadDetailStatus.Loaded
         }

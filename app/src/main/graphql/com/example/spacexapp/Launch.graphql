@@ -1,7 +1,11 @@
-query Launch($launchId: ID!){
-    launch(id: $launchId) {
+query Launch($mission_name: String!){
+    launches(
+        limit: 1,
+        find: {
+            mission_name: $mission_name,
+        }
+    ){
         mission_name
-        id
         details
         launch_date_unix
         launch_success

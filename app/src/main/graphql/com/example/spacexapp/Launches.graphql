@@ -1,7 +1,6 @@
 query Launches($limit: Int, $offset: Int, $sort: String, $order: String){
     launches(limit: $limit, offset: $offset, sort: $sort, order: $order){
         mission_name
-        id
         details
         launch_date_unix
         launch_success

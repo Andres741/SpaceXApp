@@ -90,7 +90,7 @@ class MainFragment : Fragment() {
     private fun navigateLaunchDetail(launch: LaunchesQuery.Launch) {
         Log.d("MainFragment", "clicked launch $launch")
         findNavController().navigate(
-            MainFragmentDirections.actionMainFragmentToLoadingLaunchDetailsFragment(launch.id ?: "")
+            MainFragmentDirections.actionMainFragmentToLoadingLaunchDetailsFragment(launch.mission_name ?: "")
         )
     }
 

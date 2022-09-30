@@ -12,11 +12,11 @@ class LaunchesPagingSource (
 
     private val repeatedSet = HashSet<String>()
 
-    private fun launchIsRepeated(launch: LaunchesQuery.Launch) = repeatedSet.add(launch.id ?: "")
+    private fun launchIsRepeated(launch: LaunchesQuery.Launch) = repeatedSet.add(launch.mission_name ?: "")
 
-    // filter the launch "SXM-7" because has a grown id
+
     private fun prepareData(launchesPage: List<LaunchesQuery.Launch?>?) =
-        launchesPage?.asSequence().makeNotNull().filter { it.mission_name != "SXM-7" }.filter(::launchIsRepeated).toList()
+        launchesPage?.asSequence().makeNotNull().filter(::launchIsRepeated).toList()
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LaunchesQuery.Launch> {
         val offset = params.key ?: INITIAL_INDEX

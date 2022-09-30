@@ -12,8 +12,12 @@ class LaunchRepository @Inject constructor(
     private val apolloClient: ApolloClient
 ) {
 
-    suspend fun getLaunch(launchId: String) = kotlin.runCatching {
-        apolloClient.query(LaunchQuery(launchId)).execute().dataAssertNoErrors
+    private fun String.fixParenthesis(): String {
+        return replace("(", "\\(").replace(")", "\\)")
+    }
+
+    suspend fun getLaunch(missionName: String) = kotlin.runCatching {
+        apolloClient.query(LaunchQuery(missionName.fixParenthesis())).execute().dataAssertNoErrors.launches?.getOrNull(0)
     }
 
     suspend fun getAll() = kotlin.runCatching {

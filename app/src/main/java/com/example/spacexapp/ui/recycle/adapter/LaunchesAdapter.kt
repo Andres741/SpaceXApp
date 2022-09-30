@@ -15,7 +15,7 @@ class LaunchesAdapter(
     private val onClickLaunch: OnClickLaunch,
 ) : PagingDataAdapter<LaunchesQuery.Launch, LaunchViewHolder>(
     createDiffUtil(
-        areItemsTheSame = { old, new -> old.id == new.id },
+        areItemsTheSame = { old, new -> old.mission_name == new.mission_name },
         areContentsTheSame = LaunchesQuery.Launch::equals
     )
 ) {
