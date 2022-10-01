@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -51,16 +52,12 @@ class MainFragment : Fragment() {
     }
 
     private fun LaunchesAdapter.setUpAdapter() = run {
-        var cont = 0
         loadStateFlow.collectOnUI(viewLifecycleOwner) {
-            (++cont).log("Cont")
-            it.apply {
-                prepend.log("prepend")
-                append.log("append")
-                refresh.log("refresh")
-            }
-
             viewModel.loadPageState.value = it.source.toLoadPageStatus()
+
+            val refreshStatus = it.source.refresh
+            binding.error.isVisible = refreshStatus is LoadState.Error
+            binding.progressBar.isVisible = refreshStatus is LoadState.Loading
         }
 
         withLoadStateHeaderAndFooter(
