@@ -66,8 +66,8 @@ class ShipViewHolder private constructor(
                 }
 
                 imageFlow.collectLatest { loadStatus ->
-                    loadingText.isVisible = loadStatus is CacheLoadImageStatus.Loading
-                    error.isVisible = loadStatus is CacheLoadImageStatus.Error
+                    loadingText.isVisible = loadStatus.isLoadingOrNotInternetException()
+                    error.isVisible = loadStatus.isInternetException()
 
                     loadStatus.getDrawableOrNull()?.also { drawable ->
                         shipImage.isVisible = true

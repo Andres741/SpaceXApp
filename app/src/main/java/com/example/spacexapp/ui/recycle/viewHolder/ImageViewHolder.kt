@@ -69,8 +69,8 @@ class ImageViewHolder private constructor(
                 }
 
                 imageFlow.collectLatest { loadStatus ->
-                    progressBar.isVisible = loadStatus is CacheLoadImageStatus.Loading
-                    error.isVisible = loadStatus is CacheLoadImageStatus.Error
+                    progressBar.isVisible = loadStatus.isLoadingOrNotInternetException()
+                    error.isVisible = loadStatus.isInternetException()
 
                     loadStatus.getDrawableOrNull()?.also { drawable ->
                         image.isVisible = true

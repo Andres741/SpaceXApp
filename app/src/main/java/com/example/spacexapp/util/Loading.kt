@@ -34,12 +34,14 @@ suspend inline fun <T: Any> load(
     crossinline onError: (Throwable) -> Unit,
     crossinline loader: suspend () -> Result<T>,
 ): T {
+    loader().onSuccess { return it }
+
     var res: T? = null
     supervisorScope {
         launch {
             networkStatusFlow.collectLatest { net ->
                 if (net.isNotAvailable) {
-                    onError(IOException("Internet connexion lost"))
+                    onError(InternetConnectionLostException)
                     return@collectLatest
                 }
 

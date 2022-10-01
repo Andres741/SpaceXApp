@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import okio.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 
@@ -79,6 +80,10 @@ fun getNetworkStatusFlow(context: Context): Flow<NetworkStatus> = callbackFlow {
 
 class NetworkStatusFlowFactory(private val context: Context) {
     val new get() = getNetworkStatusFlow(context)
+}
+
+object InternetConnectionLostException: IOException() {
+    override val message: String = "Internet connexion lost"
 }
 
 private val logger = Logger("Internet")
