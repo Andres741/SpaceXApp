@@ -17,7 +17,6 @@ import javax.inject.Inject
 class ImageViewModel @Inject constructor(
     networkStatusFlowFactory: NetworkStatusFlowFactory,
     private val imageDownloader: ImageDownloader,
-    downloadingImagesCache: DownloadingImagesCache,
 ): ViewModel() {
 
     private val connexionFlow = networkStatusFlowFactory.new
@@ -33,7 +32,7 @@ class ImageViewModel @Inject constructor(
                 onLoading = { _loadImageStatusFlow.value = LoadImageStatus.Loading },
                 onError = { _loadImageStatusFlow.value = LoadImageStatus.Error }
             ) {
-                imageDownloader.getImage("$imageURL/").mapCatching { it ?: throw IOException("Load image failed") }
+                imageDownloader.getImage(imageURL).mapCatching { it ?: throw IOException("Load image failed") }
             }
             _loadImageStatusFlow.value = LoadImageStatus.Loaded(drawable)
         }

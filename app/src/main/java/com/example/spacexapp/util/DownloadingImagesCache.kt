@@ -109,7 +109,7 @@ sealed interface CacheLoadImageStatus: LoadStatus {
     value class Error(val exception: Throwable): CacheLoadImageStatus, LoadStatus.Error
     object Loading: CacheLoadImageStatus, LoadStatus.Loading
 
-    fun isLoadingOrNotInternetException() = this is CacheLoadImageStatus.Loading || (this is Error) && exception !is InternetConnectionLostException
+    fun isLoadingOrNotInternetException() = this is Loading || (this is Error) && exception !is InternetConnectionLostException
     fun isInternetException() = (this as? Error)?.exception is InternetConnectionLostException
 }
 
