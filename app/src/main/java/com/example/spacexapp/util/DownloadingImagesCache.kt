@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
 /**
  * A image cache that is aware of the loading status and retries to load an image when the internet
  * connexion is restored.
+ * It is possible because this class provides flows of CacheLoadImageStatus instead the image itself.
+ *
  * This class is ready to work concurrently.
  */
 class DownloadingImagesCache (
