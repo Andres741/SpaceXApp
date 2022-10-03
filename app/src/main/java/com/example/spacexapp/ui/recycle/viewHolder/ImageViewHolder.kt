@@ -44,7 +44,7 @@ class ImageViewHolder private constructor(
     }
 
     private val scopeFactory = OneScopeAtOnceProvider()
-    private inline val coroutineScope get() = scopeFactory.currentScope
+    private val coroutineScope by scopeFactory::currentScope
 
     private val size = Size (
         height = Dimension(binding.image.layoutParams.height),

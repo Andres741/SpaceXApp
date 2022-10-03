@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 /**
  * A image cache that is aware of the loading status and retries to load an image when the internet
  * connexion is restored.
+ * This class is ready to work concurrently.
  */
 class DownloadingImagesCache (
     connexionFlow: Flow<NetworkStatus>,
@@ -129,20 +130,35 @@ private data class CacheValue (
     }
 }
 
+/**
+ * Provides CacheValue. If possible returns a CacheValue from the queue, otherwise crates a new
+ * CacheValue.
+ * Useless CacheValue must return to this class.
+ * The propose of this class is avoid to crate a new CacheValue each time a ViewHolder is bind.
+ * This class is ready to work concurrently.
+ */
 private class CacheValuePool {
     private val queue = ConcurrentLinkedQueue<CacheValue>() // A stack is faster, but there are not a concurrent stack
 
     private fun generateNewValue(job: Job) = CacheValue(job)
 
+    /**
+     * This method only needs a job because CacheValue.flow is not needed the be recycled.
+     */
     fun getValue(job: Job): CacheValue = queue.poll()?.also { it.job = job } ?: generateNewValue(job)
 
+    /**
+     * This method is usefully when is needed CacheValue.flow in order to crate the coroutine.
+     */
     fun getValue(newJobProvider: (MutableStateFlow<CacheLoadImageStatus>) -> Job): CacheValue {
         val value = queue.poll() ?: return CacheValue.build(newJobProvider)
         value.job = newJobProvider(value.flow)
         return value
     }
 
-
+    /**
+     * Setup a CacheValue in order to be reused and stores until needed.
+     */
     fun putValue(cacheValue: CacheValue) {
         cacheValue.job.cancel()
         cacheValue.flow.value = CacheLoadImageStatus.Loading

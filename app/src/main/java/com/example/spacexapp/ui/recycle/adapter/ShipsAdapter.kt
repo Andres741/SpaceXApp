@@ -10,9 +10,12 @@ import com.example.spacexapp.util.extensions.createDiffUtil
 
 class ShipsAdapter(
     private val shipViewHolderArgs: ShipViewHolderArgs,
-): ListAdapter<LaunchQuery.Ship, ShipViewHolder>(
-    createDiffUtil({ old, new -> old.id == new.id }, LaunchQuery.Ship::equals)
-) {
+): ListAdapter<LaunchQuery.Ship, ShipViewHolder>(diffUtil) {
+
+    private companion object {
+        val diffUtil = createDiffUtil({ old, new -> old.id == new.id }, LaunchQuery.Ship::equals)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ShipViewHolder.create(parent, shipViewHolderArgs)
 

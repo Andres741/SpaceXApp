@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
+import androidx.recyclerview.widget.ConcatAdapter
 import com.example.spacexapp.LaunchesQuery
 import com.example.spacexapp.databinding.FragmentMainBinding
 import com.example.spacexapp.ui.recycle.adapter.LaunchesAdapter
@@ -51,7 +52,12 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    private fun LaunchesAdapter.setUpAdapter() = run {
+    private fun LaunchesAdapter.setUpAdapter(): ConcatAdapter {
+        observeAdapter()
+        return concatAdapter()
+    }
+
+    private fun LaunchesAdapter.observeAdapter() {
         loadStateFlow.collectOnUI(viewLifecycleOwner) {
             viewModel.loadPageState.value = it.source.toLoadPageStatus()
 
@@ -59,12 +65,13 @@ class MainFragment : Fragment() {
             binding.error.isVisible = refreshStatus is LoadState.Error
             binding.progressBar.isVisible = refreshStatus is LoadState.Loading
         }
+    }
 
+    private fun LaunchesAdapter.concatAdapter(): ConcatAdapter =
         withLoadStateHeaderAndFooter(
             header = LocationLoadingStateAdapter(),
             footer = LocationLoadingStateAdapter(),
         )
-    }
 
     private fun MainViewModel.observeViewModel() {
 

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,7 +12,6 @@ import com.example.spacexapp.R
 import com.example.spacexapp.databinding.FragmentImageBinding
 import com.example.spacexapp.util.*
 import com.example.spacexapp.util.extensions.collectOnUI
-import com.example.spacexapp.util.extensions.saveImageToStorage
 import com.example.spacexapp.util.extensions.viewCoroutineScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

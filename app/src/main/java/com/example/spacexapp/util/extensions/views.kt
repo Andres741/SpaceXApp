@@ -1,6 +1,5 @@
 package com.example.spacexapp.util.extensions
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
@@ -9,7 +8,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -61,7 +60,7 @@ fun View.putWebLinkOrGone(URL: String?) {
 }
 
 inline val Fragment.viewLifecycle get() = viewLifecycleOwner.lifecycle
-inline val Fragment.viewCoroutineScope get() = viewLifecycleOwner.lifecycle.coroutineScope
+inline val Fragment.viewCoroutineScope get() = viewLifecycleOwner.lifecycleScope
 
 
 inline var<T, VH : RecyclerView.ViewHolder> ListAdapter<T, VH>.list: List<T>

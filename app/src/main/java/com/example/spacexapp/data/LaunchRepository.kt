@@ -16,15 +16,15 @@ class LaunchRepository @Inject constructor(
         return replace("(", "\\(").replace(")", "\\)")
     }
 
-    suspend fun getLaunch(missionName: String) = kotlin.runCatching {
+    suspend fun getLaunch(missionName: String): Result<LaunchQuery.Launch?> = kotlin.runCatching {
         apolloClient.query(LaunchQuery(missionName.fixParenthesis())).execute().dataAssertNoErrors.launches?.getOrNull(0)
     }
 
-    suspend fun getAll() = kotlin.runCatching {
+    suspend fun getAll(): Result<LaunchesQuery.Data> = kotlin.runCatching {
         apolloClient.query(LaunchesQuery()).execute().dataAssertNoErrors
     }
 
-    suspend fun getLaunches(limit: Int, offset: Int) = kotlin.runCatching {
+    suspend fun getLaunches(limit: Int, offset: Int): Result<LaunchesQuery.Data> = kotlin.runCatching {
         apolloClient.query(
             LaunchesQuery(
                 limit = Optional.present(limit),
@@ -35,7 +35,8 @@ class LaunchRepository @Inject constructor(
         ).execute().dataAssertNoErrors
     }
 
-    suspend fun getPage(perPage: Int, page: Int) = getLaunches(perPage, perPage * page)
+    suspend fun getPage(perPage: Int, page: Int): Result<LaunchesQuery.Data> =
+        getLaunches(perPage, perPage * page)
 
 
     fun getLaunchesDataFlow(): Flow<PagingData<LaunchesQuery.Launch>> = Pager(

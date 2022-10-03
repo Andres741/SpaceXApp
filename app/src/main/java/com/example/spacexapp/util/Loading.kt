@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import okio.IOException
 
+
 interface LoadStatus {
     interface Loaded: LoadStatus
     interface Loading: LoadStatus
@@ -28,6 +29,10 @@ suspend fun Flow<LoadStatus>.awaitLoadFinish() {
     takeWhile { it !is LoadStatus.Loaded }.lastOrNull()
 }
 
+/**
+ * This function will be trying to load until successful stopping when internet connection is not
+ * available and restarting when connection restored.
+ */
 suspend inline fun <T: Any> load(
     networkStatusFlow: Flow<NetworkStatus>,
     crossinline onLoading: () -> Unit,
@@ -67,11 +72,6 @@ suspend inline fun <T: Any> load(
     }
     return res!!
 }
-
-data class LoadingCallbacks(
-    val onLoading: () -> Unit,
-    val onError: (Throwable) -> Unit,
-)
 
 
 private val logger = Logger("Loading")

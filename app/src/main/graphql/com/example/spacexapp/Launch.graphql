@@ -1,3 +1,5 @@
+
+# This query uses launches query instead launch query because the id repeated is in some occasions
 query Launch($mission_name: String!){
     launches(
         limit: 1,
