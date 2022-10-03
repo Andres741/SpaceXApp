@@ -1,7 +1,6 @@
 package com.example.spacexapp.ui.datail
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.data.LaunchRepository
 import com.example.spacexapp.util.*
@@ -19,21 +18,23 @@ class LaunchDetailViewModel @Inject constructor(
     val downloadingImagesCache: DownloadingImagesCache,
 ) : ViewModel() {
 
+    private val coroutineScopeBuilder = OneScopeAtOnceProvider()
+    private val coroutineScope by coroutineScopeBuilder::currentScope
+
     private val connexionFlow = networkStatusFlowFactory.new
+
     private val _loadingStatus = MutableStateFlow(LoadDetailStatus.Loading as LoadDetailStatus)
 
     val loadingStatus: StateFlow<LoadDetailStatus> = _loadingStatus
 
-    lateinit var launch: LaunchQuery.Launch
-        private set
-
-    fun setLoading() {
+    fun initViewModel() {
+        coroutineScopeBuilder.newScope
         _loadingStatus.value = LoadDetailStatus.Loading
     }
 
     fun loadData(missionName: String) {
-        viewModelScope.launch(Dispatchers.Default) {
-            launch = load(
+        coroutineScope?.launch(Dispatchers.Default) {
+            val launch = load(
                 connexionFlow,
                 onLoading = { _loadingStatus.value = LoadDetailStatus.Loading },
                 onError = { _loadingStatus.value = LoadDetailStatus.Error }
@@ -41,8 +42,13 @@ class LaunchDetailViewModel @Inject constructor(
                 launchRepository.getLaunch(missionName).mapCatching { it!! }
             }
 
-            _loadingStatus.value = LoadDetailStatus.Loaded
+            _loadingStatus.value = LoadDetailStatus.Loaded(launch)
         }
+    }
+
+    fun clearViewModel() {
+        _loadingStatus.value = LoadDetailStatus.Loading
+        coroutineScopeBuilder.cancel()
     }
 
 //    private val isPossibleLoad = isPossibleTryLoadFlow(connexionFlow, _loadingStatus)
@@ -78,8 +84,9 @@ class LaunchDetailViewModel @Inject constructor(
     private fun<T> T.log(msj: Any? = null) = logger.log(this, msj)
 }
 
-sealed class LoadDetailStatus: LoadStatus {
-    object Loaded: LoadDetailStatus(), LoadStatus.Loaded
-    object Loading: LoadDetailStatus(), LoadStatus.Loading
-    object Error: LoadDetailStatus(), LoadStatus.Error
+sealed interface LoadDetailStatus: LoadStatus {
+    @JvmInline
+    value class Loaded(val launch: LaunchQuery.Launch): LoadDetailStatus, LoadStatus.Loaded
+    object Loading: LoadDetailStatus, LoadStatus.Loading
+    object Error: LoadDetailStatus, LoadStatus.Error
 }

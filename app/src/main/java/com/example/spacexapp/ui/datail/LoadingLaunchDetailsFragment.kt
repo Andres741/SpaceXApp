@@ -35,7 +35,7 @@ class LoadingLaunchDetailsFragment : Fragment() {
 
         val args = LoadingLaunchDetailsFragmentArgs.fromBundle(arguments!!)
 
-        viewModel.setLoading()
+        viewModel.initViewModel()
 
         viewModel.loadingStatus.collectOnUI(viewLifecycleOwner) {
 
