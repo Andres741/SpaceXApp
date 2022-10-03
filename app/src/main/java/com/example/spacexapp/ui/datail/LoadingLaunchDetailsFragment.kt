@@ -57,6 +57,7 @@ class LoadingLaunchDetailsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        viewModel.stopViewModel()
     }
 
     private val logger = Logger("LoadingLaunchDetailsFragment")

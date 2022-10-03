@@ -19,7 +19,7 @@ class LaunchDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val coroutineScopeBuilder = OneScopeAtOnceProvider()
-    private val coroutineScope by coroutineScopeBuilder::currentScope
+    private val loadLaunchScope by coroutineScopeBuilder::currentScope
 
     private val connexionFlow = networkStatusFlowFactory.new
 
@@ -33,7 +33,7 @@ class LaunchDetailViewModel @Inject constructor(
     }
 
     fun loadData(missionName: String) {
-        coroutineScope?.launch(Dispatchers.Default) {
+        loadLaunchScope?.launch(Dispatchers.Default) {
             val launch = load(
                 connexionFlow,
                 onLoading = { _loadingStatus.value = LoadDetailStatus.Loading },
@@ -46,8 +46,7 @@ class LaunchDetailViewModel @Inject constructor(
         }
     }
 
-    fun clearViewModel() {
-        _loadingStatus.value = LoadDetailStatus.Loading
+    fun stopViewModel() {
         coroutineScopeBuilder.cancel()
     }
 

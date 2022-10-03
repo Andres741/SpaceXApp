@@ -99,11 +99,6 @@ class LaunchDetailFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.clearViewModel()
-    }
-
     private fun navigateToImage(imageURL: String) {
         "clicked image $imageURL".log()
         findNavController().navigate(
