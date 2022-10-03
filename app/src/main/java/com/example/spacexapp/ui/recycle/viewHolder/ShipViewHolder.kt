@@ -10,7 +10,6 @@ import coil.size.Dimension
 import coil.size.Size
 import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.databinding.ShipItemBinding
-import com.example.spacexapp.util.CacheLoadImageStatus
 import com.example.spacexapp.util.DownloadingImagesCache
 import com.example.spacexapp.util.OneScopeAtOnceProvider
 import com.example.spacexapp.util.extensions.setTextOrGone
@@ -19,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 class ShipViewHolder private constructor(
     private val binding: ShipItemBinding,
@@ -58,6 +58,10 @@ class ShipViewHolder private constructor(
 
         binding.apply {
             shipName.setTextOrGone(ship.name?.trim())
+
+            loadingText.isVisible = true
+            error.isVisible = false
+            shipImage.isVisible = false
 
             val imageUrl = ship.image ?: return
             coroutineScope?.launch {
