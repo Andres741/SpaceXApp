@@ -7,7 +7,10 @@ import com.example.spacexapp.LaunchQuery
 import com.example.spacexapp.LaunchesQuery
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import javax.inject.Singleton
 
+
+@Singleton
 class LaunchRepository @Inject constructor(
     private val apolloClient: ApolloClient
 ) {
@@ -17,7 +20,7 @@ class LaunchRepository @Inject constructor(
     }
 
     suspend fun getLaunch(missionName: String): Result<LaunchQuery.Launch?> = kotlin.runCatching {
-        apolloClient.query(LaunchQuery(missionName.fixParenthesis())).execute().dataAssertNoErrors.launches?.getOrNull(0)
+        apolloClient.query(LaunchQuery(missionName.fixParenthesis())).execute().dataAssertNoErrors.launches?.firstOrNull()
     }
 
     suspend fun getAll(): Result<LaunchesQuery.Data> = kotlin.runCatching {

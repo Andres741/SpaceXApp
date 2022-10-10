@@ -4,8 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spacexapp.ui.recycle.viewHolder.ImageViewHolder
 import com.example.spacexapp.ui.recycle.viewHolder.ImageViewHolderArgs
-import com.example.spacexapp.ui.recycle.viewHolder.OnClickImageViewHolder
-import com.example.spacexapp.util.DownloadingImagesCache
+
 
 class ImagesAdapter(
     private val imageViewHolderArgs: ImageViewHolderArgs,

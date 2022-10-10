@@ -3,15 +3,12 @@ package com.example.spacexapp.ui.recycle.viewHolder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.size.Dimension
 import coil.size.Size
-import com.bumptech.glide.Glide
 import com.example.spacexapp.databinding.ImageItemBinding
-import com.example.spacexapp.util.CacheLoadImageStatus
 import com.example.spacexapp.util.DownloadingImagesCache
 import com.example.spacexapp.util.OneScopeAtOnceProvider
 import com.example.spacexapp.util.getDrawableOrNull
