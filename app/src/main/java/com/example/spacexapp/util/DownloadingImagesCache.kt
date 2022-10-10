@@ -27,7 +27,7 @@ class DownloadingImagesCache (
 ) {
     private val cacheValuePool = CacheValuePool()
 
-    private val cache = ConcurrentHashMap<String, CacheValue>(maxCacheSize)
+    private val cacheMap = ConcurrentHashMap<String, CacheValue>(maxCacheSize)
     private val queue = ConcurrentLinkedQueue<String>()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob(parent))
@@ -37,8 +37,8 @@ class DownloadingImagesCache (
     )
 
     fun getImageFlow(imageURL: String, imageSize: Size? = null): StateFlow<CacheLoadImageStatus> {
-        val drawableFromCache = cache[imageURL]
-        if (drawableFromCache != null) return drawableFromCache.flow
+        val drawableFlow = cacheMap[imageURL]?.flow
+        if (drawableFlow != null) return drawableFlow
 
         return createNewCacheValue(imageURL, imageSize).flow
     }
@@ -61,7 +61,7 @@ class DownloadingImagesCache (
     }
 
     private fun addToCache(imageURL: String, cacheValue: CacheValue) {
-        cache[imageURL] = cacheValue
+        cacheMap[imageURL] = cacheValue
         queue.add(imageURL)
         fixCacheSize()
     }
@@ -72,7 +72,7 @@ class DownloadingImagesCache (
 
         coroutineScope.launch {
             fixCacheSizeMutex.withLock {
-                while (cache.size > maxCacheSize) {
+                while (cacheMap.size > maxCacheSize) {
                     val removed = queue.poll() ?: break
                     removeFromCache(removed)
                 }
@@ -86,7 +86,7 @@ class DownloadingImagesCache (
     }
 
     fun removeIfDownloading(imageURL: String): Boolean {
-        val cacheValue = cache[imageURL] ?: return false
+        val cacheValue = cacheMap[imageURL] ?: return false
         if (cacheValue.flow.value is CacheLoadImageStatus.Loaded) return false
 
         removeFromCache(imageURL)
@@ -94,13 +94,13 @@ class DownloadingImagesCache (
     }
 
     fun clear() {
-        cache.keys().toList().forEach(::removeFromCache)
-        cache.clear()
+        cacheMap.keys().toList().forEach(::removeFromCache)
+        cacheMap.clear()
         queue.clear()
     }
 
     private fun removeFromCache(imageURL: String) {
-        val removed = cache.remove(imageURL) ?: return
+        val removed = cacheMap.remove(imageURL) ?: return
         cacheValuePool.putValue(removed)
     }
 }
@@ -140,7 +140,7 @@ private data class CacheValue (
  * This class is ready to work concurrently.
  */
 private class CacheValuePool {
-    private val queue = ConcurrentLinkedQueue<CacheValue>() // A stack is faster, but there are not a concurrent stack
+    private val queue = ConcurrentLinkedQueue<CacheValue>()
 
     private fun generateNewValue(job: Job) = CacheValue(job)
 
